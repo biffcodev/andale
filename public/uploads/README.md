@@ -1,18 +1,11 @@
-# Assets del proyecto de Claude Design
+# public/uploads
 
-Los SVG de marca (`logo.svg`, `logo-bold.svg`, `isologo.svg`) se importaron completos desde el
-proyecto de Claude Design.
+Todos los assets del sitio (imágenes y video). **Siempre `.webp`** para imágenes.
 
-Los archivos binarios grandes **no pudieron importarse** porque la API de Claude Design limita
-la lectura de cada archivo a 256 KiB y estos pesan entre 1.4 MB y varios MB. El sitio los
-referencia igualmente y degrada con elegancia (placeholder rayado, tal como el diseño original)
-hasta que se agreguen aquí. Para completar el sitio, copiá en esta carpeta:
+La guía completa de qué archivo va en cada lugar, cómo se organizan los
+proyectos y cómo agregar uno nuevo está en **[`docs/ASSETS.md`](../../docs/ASSETS.md)**.
 
-- `hero1.png`, `hero2.png`, `hero3.png` — imágenes del hero / studio
-- `casacapo.png`, `polylepis.png`, `sanpietro.png`, `smileshub.png` — portadas de proyectos
-- `jime-1.webp`, `fer-1.webp`, `mili-1.webp`, `vale-1.webp`, `cata-1.webp`, `manu-1.webp` — fotos del equipo
-- `mp4.mp4` — video del hero (home y work)
-
-Los nombres deben coincidir exactamente (el código los referencia como `/uploads/<archivo>`).
-Podés descargarlos desde el proyecto de Claude Design (menú de archivos) o exportarlos desde
-los originales del estudio. Ideal: comprimir a ≤300 KB por imagen (WebP/AVIF) antes de subirlos.
+Resumen rápido:
+- Fotos del equipo: aquí mismo, `jime-1.webp`, `fer-1.webp`, `mili-1.webp`, `vale-1.webp`, `cata-1.webp`, `manu-1.webp`.
+- Imágenes de proyecto: `projects/<slug>/cover.webp` + `1.webp`…`4.webp`.
+- Sitio: `hero1.webp`, `hero2.webp`, `hero3.webp`, `mp4.mp4`.

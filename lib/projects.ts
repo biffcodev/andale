@@ -53,8 +53,8 @@ export interface Project {
 }
 
 const img = (slug: string) => ({
-  cover: `/uploads/projects/${slug}/cover.jpg`,
-  gallery: [1, 2, 3, 4].map((n) => `/uploads/projects/${slug}/${n}.jpg`),
+  cover: `/uploads/projects/${slug}/cover.webp`,
+  gallery: [1, 2, 3, 4].map((n) => `/uploads/projects/${slug}/${n}.webp`),
 });
 
 export const PROJECTS: Project[] = [

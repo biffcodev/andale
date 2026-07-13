@@ -4,8 +4,11 @@ import type { Lang, Translation, Work } from "./i18n";
 /* Remote images are resized through the CDN exactly like the design did */
 export const IMG_PARAMS = "?auto=format&fit=crop&w=1500&q=80";
 
-export const HERO_IMGS = ["/uploads/hero1.png", "/uploads/hero2.png", "/uploads/hero3.png"];
-export const WORK_IMGS = ["/uploads/casacapo.png", "/uploads/polylepis.png", "/uploads/sanpietro.png", "/uploads/smileshub.png"];
+/* Home hero (video poster), studio full-bleed image and generic site imagery.
+   Drop these as .webp in public/uploads/ — see docs/ASSETS.md */
+export const HERO_IMGS = ["/uploads/hero1.webp", "/uploads/hero2.webp", "/uploads/hero3.webp"];
+/* Poster for the /work video hero + decorative frames behind the services accordion */
+export const WORK_IMGS = ["/uploads/hero1.webp", "/uploads/hero2.webp", "/uploads/hero3.webp", "/uploads/hero1.webp"];
 export const HERO_VIDEO = "/uploads/mp4.mp4";
 
 export const GALLERY_POOL = [
