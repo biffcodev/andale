@@ -87,7 +87,7 @@ export default function HomePage() {
         <span className="mono" style={{ fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase", color: "rgba(255,255,255,.72)" }}>
           {w.client}{w.year ? ` — ${w.year}` : ` — ${w.sector}`}
         </span>
-        <h3 style={{ fontSize: "clamp(34px,6vw,88px)", fontWeight: 800, letterSpacing: "-.035em", lineHeight: 1, marginTop: 18, maxWidth: "15ch", textWrap: "balance" }}>{w.title}</h3>
+        <h3 style={{ fontSize: "clamp(26px,3.6vw,52px)", fontWeight: 800, letterSpacing: "-.03em", lineHeight: 1.02, marginTop: 16, maxWidth: "18ch", textWrap: "balance" }}>{w.title}</h3>
         <span className="mono" style={{ display: "block", fontSize: 13, letterSpacing: ".06em", color: "rgba(255,255,255,.72)", marginTop: 22 }}>{w.tags}</span>
         <PillButton inverted style={{ marginTop: 30 }} onClick={() => router.push(`/work/${w.slug}`)}>
           {t.viewCase}

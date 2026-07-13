@@ -125,7 +125,7 @@ export default function WorkPage() {
             <span className="mono" style={{ fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase", color: "rgba(255,255,255,.72)" }}>
               {w.client}{w.year ? ` — ${w.year}` : ""}
             </span>
-            <h2 style={{ fontSize: "clamp(40px,7vw,104px)", fontWeight: 800, letterSpacing: "-.04em", lineHeight: 0.98, marginTop: 14, maxWidth: "16ch", textWrap: "balance" }}>{w.title}</h2>
+            <h2 style={{ fontSize: "clamp(28px,4.2vw,58px)", fontWeight: 800, letterSpacing: "-.035em", lineHeight: 1.02, marginTop: 14, maxWidth: "20ch", textWrap: "balance" }}>{w.title}</h2>
             <span className="pillbtn" style={{ marginTop: 26, display: "inline-flex", alignItems: "center", padding: "14px 26px", borderRadius: 999, background: "#fff", color: "#0A0A0A", fontSize: 15, fontWeight: 600 }}>
               {t.ui.viewProject}
               <span className="pillarrow">

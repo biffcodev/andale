@@ -18,7 +18,9 @@ const TRANSLATIONS = translations as Record<string, Partial<Record<Lang, Project
 --------------------------------------------------------------------------- */
 
 export interface ProjectContent {
-  /** Overview heading, e.g. "Dillo — Branding para una comunicación sin barreras" */
+  /** Short descriptor shown as the card/panel headline — no client name, no
+      "Branding/Rebranding" (the client is always shown next to it). e.g.
+      "Comunicación sin barreras" */
   title: string;
   /** "Frase descriptiva del proyecto" */
   tagline: string;
@@ -64,7 +66,7 @@ export const PROJECTS: Project[] = [
     ...img("dillo"),
     content: {
       ES: {
-        title: "Dillo — Branding para una comunicación sin barreras",
+        title: "Comunicación sin barreras",
         tagline: "Una identidad que transforma la accesibilidad en una experiencia de marca humana, contemporánea y universal.",
         heroPhrase: "Diseñamos una marca para que todas las personas puedan formar parte de la conversación.",
         summary:
@@ -96,7 +98,7 @@ export const PROJECTS: Project[] = [
     ...img("casa-capo"),
     content: {
       ES: {
-        title: "Casa Capo — Branding para una nueva categoría gastronómica",
+        title: "Una nueva categoría gastronómica",
         tagline: "Una marca que eleva lo cotidiano a través del oficio, la sensibilidad y la obsesión por el detalle.",
         heroPhrase: "Todo está en el primer bocado.",
         summary:
@@ -128,7 +130,7 @@ export const PROJECTS: Project[] = [
     ...img("lomo-loco"),
     content: {
       ES: {
-        title: "Lomo Loco — Rebranding de un clásico con espíritu de social club",
+        title: "Un clásico con espíritu de social club",
         tagline: "Una identidad que renueva un clásico sin perder el sabor, la generosidad ni las historias que lo hicieron parte de la ciudad.",
         heroPhrase: "La sobremesa es nuestro plato más fuerte.",
         summary:
@@ -161,7 +163,7 @@ export const PROJECTS: Project[] = [
     ...img("polylepis"),
     content: {
       ES: {
-        title: "Polylepis — Branding para descubrir otra dimensión del viaje",
+        title: "Otra dimensión del viaje",
         tagline: "Una identidad que encuentra el equilibrio entre aventura y calma, movimiento y contemplación, partir y volver.",
         heroPhrase: "La dimensión del viaje.",
         summary:
@@ -193,7 +195,7 @@ export const PROJECTS: Project[] = [
     ...img("punto-intimo"),
     content: {
       ES: {
-        title: "Punto Íntimo — Branding para vivir la sensualidad con libertad",
+        title: "Sensualidad con libertad",
         tagline: "Una identidad audaz y sofisticada para una marca que invita a explorar, expresarse y disfrutar sin inhibiciones.",
         heroPhrase: "Liberá tu verdadero yo.",
         summary:
@@ -225,7 +227,7 @@ export const PROJECTS: Project[] = [
     ...img("san-pietro"),
     content: {
       ES: {
-        title: "San Pietro — Rebranding de una historia construida con empuje, honestidad y oficio",
+        title: "Una historia de empuje, honestidad y oficio",
         tagline: "Una identidad que convierte años de trabajo, cuidado y aprendizaje en una experiencia gastronómica que se siente antes de poder explicarse.",
         heroPhrase: "Sin palabras.",
         summary:
@@ -257,7 +259,7 @@ export const PROJECTS: Project[] = [
     ...img("barbale"),
     content: {
       ES: {
-        title: "Barbalé — Branding para una nueva forma de producir y exportar alimentos",
+        title: "Una nueva forma de producir y exportar alimentos",
         tagline: "Una identidad que convierte trazabilidad, calidad e innovación en certezas para toda la cadena agroalimentaria.",
         heroPhrase: "Somos la iniciativa del agro.",
         summary:
@@ -289,7 +291,7 @@ export const PROJECTS: Project[] = [
     ...img("poligono-cordoba"),
     content: {
       ES: {
-        title: "Polígono Córdoba — Branding para una nueva escala industrial",
+        title: "Una nueva escala industrial",
         tagline: "Una identidad que conecta desarrollo industrial, tecnología y responsabilidad ambiental para impulsar nuevas formas de producir y crecer.",
         heroPhrase: "La nueva escala industrial.",
         summary:
