@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { EASE } from "@/components/reveal";
 
 /* Page transition: accent sweep across the top + content easing up, as in the design.
@@ -9,6 +9,7 @@ import { EASE } from "@/components/reveal";
    very top of each page (Next's default restoration otherwise left a few px offset). */
 export default function Template({ children }: { children: ReactNode }) {
   const reduce = useReducedMotion();
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual";
@@ -29,9 +30,20 @@ export default function Template({ children }: { children: ReactNode }) {
         style={{ position: "fixed", top: 0, left: 0, right: 0, height: 3, zIndex: 205, background: "var(--accent,#FC4855)", pointerEvents: "none" }}
       />
       <motion.div
+        ref={contentRef}
         initial={{ opacity: 0, y: 26, scale: 0.985 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.6, ease: EASE }}
+        /* Clear the leftover transform so position:sticky descendants (the
+           pinned Selected Work section) work — sticky breaks inside a
+           transformed ancestor. */
+        onAnimationComplete={() => {
+          const el = contentRef.current;
+          if (el) {
+            el.style.transform = "none";
+            el.style.willChange = "auto";
+          }
+        }}
       >
         {children}
       </motion.div>

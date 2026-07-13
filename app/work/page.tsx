@@ -41,26 +41,6 @@ export default function WorkPage() {
     }
   };
 
-  /* right-hand rail: which case panel is in view */
-  const panelRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const [active, setActive] = useState(0);
-  useEffect(() => {
-    const onScroll = () => {
-      const mid = window.scrollY + window.innerHeight / 2;
-      let a = 0;
-      panelRefs.current.forEach((el, i) => {
-        if (el && el.offsetTop <= mid) a = i;
-      });
-      setActive(a);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const goToCase = (i: number) => {
-    panelRefs.current[i]?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   /* "More projects" rows in the design's 2-1-2-3-1-2 rhythm */
   const rowPattern = [2, 1, 2, 3, 1, 2];
   const rows: { items: LocalizedProject[]; ar: string }[] = [];
@@ -126,12 +106,9 @@ export default function WorkPage() {
       </section>
 
       {/* ---------- FULLSCREEN CASE PANELS ---------- */}
-      {panels.map((w, i) => (
+      {panels.map((w) => (
         <button
           key={w.slug}
-          ref={(el) => {
-            panelRefs.current[i] = el;
-          }}
           onClick={() => router.push(`/work/${w.slug}`)}
           className="casepanel"
           style={{ position: "relative", display: "block", width: "100%", height: "100vh", border: "none", padding: 0, margin: 0, cursor: "pointer", overflow: "hidden", textAlign: "left", background: "var(--bg)" }}
@@ -188,39 +165,6 @@ export default function WorkPage() {
           ))}
         </div>
       </section>
-
-      {/* ---------- SIDE RAIL (desktop) ---------- */}
-      {!isMobile && (
-        <div aria-hidden="true" style={{ position: "fixed", right: "clamp(18px,3vw,42px)", top: "50%", transform: "translateY(-50%)", zIndex: 90, display: "flex", flexDirection: "column", gap: 16, alignItems: "flex-end" }}>
-          {panels.map((w, i) => (
-            <button
-              key={w.slug}
-              onClick={() => goToCase(i)}
-              aria-label={w.client}
-              style={{ display: "flex", alignItems: "center", gap: 12, background: "none", border: "none", cursor: "pointer", padding: "4px 0" }}
-            >
-              <span
-                className="mono"
-                style={{
-                  fontSize: 11, letterSpacing: ".04em", whiteSpace: "nowrap",
-                  color: i === active ? "var(--fg)" : "var(--muted)",
-                  opacity: i === active ? 1 : 0, transform: i === active ? "none" : "translateX(6px)",
-                  transition: "opacity .35s, transform .35s",
-                }}
-              >
-                {w.num} — {w.client}
-              </span>
-              <span
-                style={{
-                  width: i === active ? 26 : 10, height: 10, borderRadius: 999,
-                  background: i === active ? "var(--fg)" : "var(--muted)", opacity: i === active ? 1 : 0.45,
-                  transition: "width .4s cubic-bezier(.22,1,.36,1), opacity .3s, background .3s",
-                }}
-              />
-            </button>
-          ))}
-        </div>
-      )}
 
       <Footer />
     </main>
