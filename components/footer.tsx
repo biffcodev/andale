@@ -26,9 +26,11 @@ export function Footer() {
   }, []);
 
   const footerNav = [
-    { label: t.nav.contact, href: "/contact" },
-    { label: t.nav.services, href: "/services" },
+    { label: STRINGS.homeLabel[lang], href: "/" },
     { label: t.nav.work, href: "/work" },
+    { label: "Studio", href: "/studio" },
+    { label: t.nav.services, href: "/services" },
+    { label: t.nav.contact, href: "/contact" },
   ];
   const footerLegal = [
     { label: legal.cookies, href: "/cookies" },

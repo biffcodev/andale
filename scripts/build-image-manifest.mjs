@@ -7,8 +7,9 @@
 
    Rules per folder:
      - Only .webp/.png/.jpg/.jpeg are considered (README/.gitkeep ignored).
-     - A file literally named cover.* becomes the cover (first image); otherwise
-       the first file in natural order is the cover.
+     - A file whose name contains "cover" (e.g. cover.webp or CASA_CAPO-COVER.webp)
+       becomes the cover (first image); otherwise the first file in natural order
+       is the cover.
      - The remaining files, in natural (numeric-aware) order, are the gallery.
 
    Runs automatically before build/dev via the prebuild/predev npm hooks, and
@@ -34,7 +35,7 @@ try {
 for (const slug of slugs.sort()) {
   const files = (await readdir(join(ROOT, slug))).filter((f) => IMG.test(f));
   if (files.length === 0) continue;
-  const coverIdx = files.findIndex((f) => /^cover\./i.test(f));
+  const coverIdx = files.findIndex((f) => /cover/i.test(f.replace(IMG, "")));
   let ordered;
   if (coverIdx >= 0) {
     const cover = files[coverIdx];

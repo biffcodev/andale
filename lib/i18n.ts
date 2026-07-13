@@ -324,6 +324,7 @@ type L<T> = Record<Lang, T>;
 
 export const STRINGS: {
   scrollLabel: L<string>;
+  homeLabel: L<string>;
   watchFilm: L<string>;
   approachKicker: L<string>;
   studioQuote: L<string>;
@@ -347,6 +348,7 @@ export const STRINGS: {
   legalLinks: L<{ cookies: string; privacy: string; terms: string }>;
 } = {
   scrollLabel: { EN: "Scroll", ES: "Desliza", PT: "Deslize", IT: "Scorri" },
+  homeLabel: { EN: "Home", ES: "Inicio", PT: "Início", IT: "Home" },
   watchFilm: { EN: "Watch the film", ES: "Ver el film", PT: "Ver o filme", IT: "Guarda il film" },
   approachKicker: { EN: "How we work", ES: "Cómo trabajamos", PT: "Como trabalhamos", IT: "Come lavoriamo" },
   studioQuote: {

@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { PillButton } from "@/components/pill-button";
 import { EASE, Reveal, RevealGroup, RevealItem } from "@/components/reveal";
@@ -62,17 +62,107 @@ export default function HomePage() {
 
   /* --- pinned horizontal "Selected Work" ---
      A tall section whose inner track slides sideways as you scroll through it:
-     scroll down → the panel pins at the first project → continued vertical
-     scroll drives the rail horizontally to the last panel → vertical resumes.
-     Touch behaves the same (a vertical finger drag drives the translate), so it
-     never gets stuck mid-scroll like a native horizontal rail could. */
+     scroll down → the panel pins at the first project → each further scroll
+     step advances exactly one project → vertical resumes after the last.
+     Scrolling is quantized into whole-project steps (wheel + touch capture, with
+     a settle backstop), so a gesture always lands on a project and never rests
+     between two. */
   const reduce = useReducedMotion();
   const workRef = useRef<HTMLElement>(null);
+  const lockRef = useRef(false);
   const SLIDES = panels.length + 1; // case panels + CTA end-panel
   const { scrollYProgress } = useScroll({ target: workRef, offset: ["start start", "end end"] });
   const x = useTransform(scrollYProgress, [0, 1], ["0vw", `-${(SLIDES - 1) * 100}vw`]);
-  const stepBy = (dir: 1 | -1) => window.scrollBy({ top: dir * window.innerHeight, behavior: "smooth" });
   const scrollLabel = STRINGS.scrollLabel[lang];
+
+  /* Geometry of the pinned section in document space (rect-based, so it is
+     correct regardless of any positioned ancestor). */
+  const geo = useCallback(() => {
+    const el = workRef.current;
+    const vh = window.innerHeight || 1;
+    const top = el ? el.getBoundingClientRect().top + window.scrollY : 0;
+    const maxStep = SLIDES - 1;
+    const cur = Math.min(maxStep, Math.max(0, Math.round((window.scrollY - top) / vh)));
+    return { vh, top, maxStep, cur };
+  }, [SLIDES]);
+
+  const goToStep = useCallback(
+    (i: number) => {
+      const { vh, top, maxStep } = geo();
+      const clamped = Math.min(maxStep, Math.max(0, i));
+      lockRef.current = true;
+      window.scrollTo({ top: Math.round(top + clamped * vh), behavior: "smooth" });
+      window.setTimeout(() => {
+        lockRef.current = false;
+      }, 700);
+    },
+    [geo],
+  );
+
+  /* Quantize scrolling through the pinned section into one-project steps. */
+  useEffect(() => {
+    if (reduce || !workRef.current) return;
+    const engaged = () => {
+      const { vh, top, maxStep } = geo();
+      const y = window.scrollY;
+      return y >= top - 2 && y <= top + maxStep * vh + 2;
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      if (!engaged() || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+      const { cur, maxStep } = geo();
+      const dir = e.deltaY > 0 ? 1 : e.deltaY < 0 ? -1 : 0;
+      if (dir === 0) return;
+      if ((dir > 0 && cur >= maxStep) || (dir < 0 && cur <= 0)) return; // release at the ends
+      e.preventDefault();
+      if (lockRef.current) return;
+      goToStep(cur + dir);
+    };
+
+    let touchY = 0;
+    let touchFired = false;
+    const onTouchStart = (e: TouchEvent) => {
+      touchY = e.touches[0].clientY;
+      touchFired = false;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      if (!engaged()) return;
+      const { cur, maxStep } = geo();
+      const dy = touchY - e.touches[0].clientY;
+      const dir = dy > 0 ? 1 : -1;
+      if ((dir > 0 && cur >= maxStep) || (dir < 0 && cur <= 0)) return; // let the page scroll away
+      e.preventDefault(); // hold the page and drive the carousel with the finger
+      if (touchFired || lockRef.current || Math.abs(dy) < 40) return;
+      touchFired = true; // one project per swipe
+      goToStep(cur + dir);
+    };
+
+    let settleT = 0;
+    const onScroll = () => {
+      window.clearTimeout(settleT);
+      settleT = window.setTimeout(() => {
+        if (lockRef.current) return;
+        const { vh, top, maxStep } = geo();
+        const y = window.scrollY;
+        if (y < top - 2 || y > top + maxStep * vh + 2) return; // not inside the section
+        const nearest = Math.min(maxStep, Math.max(0, Math.round((y - top) / vh)));
+        const target = Math.round(top + nearest * vh);
+        if (Math.abs(target - y) > 2) window.scrollTo({ top: target, behavior: "smooth" });
+      }, 140);
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("scroll", onScroll);
+      window.clearTimeout(settleT);
+    };
+  }, [reduce, geo, goToStep]);
 
   const panelBase = { flex: "0 0 100vw", width: "100vw", height: "100%", position: "relative" as const, scrollSnapAlign: "start" as const, overflow: "hidden" };
 
@@ -195,10 +285,10 @@ export default function HomePage() {
                   <svg width="14" height="10" viewBox="0 0 20 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M4 1 1 5l3 4M16 1l3 4-3 4M1 5h18" /></svg>
                   {t.axisLabel}
                 </span>
-                <button onClick={() => stepBy(-1)} aria-label="Previous case" className="frostbtn" style={{ width: 46, height: 46 }}>
+                <button onClick={() => goToStep(geo().cur - 1)} aria-label="Previous case" className="frostbtn" style={{ width: 46, height: 46 }}>
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="M15 5 8 12l7 7" /></svg>
                 </button>
-                <button onClick={() => stepBy(1)} aria-label="Next case" className="frostbtn" style={{ width: 46, height: 46 }}>
+                <button onClick={() => goToStep(geo().cur + 1)} aria-label="Next case" className="frostbtn" style={{ width: 46, height: 46 }}>
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="m9 5 7 7-7 7" /></svg>
                 </button>
               </div>
