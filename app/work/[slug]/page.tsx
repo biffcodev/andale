@@ -23,6 +23,32 @@ function FeaturePanel({ img }: { img: string }) {
   );
 }
 
+/* A stand-alone editorial pull-quote, distributed through the page (not numbered
+   like a section — these are voices/phrases about the project). */
+function PullQuote({ text, align = "left" }: { text: string; align?: "left" | "center" }) {
+  return (
+    <section style={{ padding: "clamp(64px,11vh,140px) clamp(20px,6vw,110px)" }}>
+      <Reveal
+        as="blockquote"
+        style={{
+          margin: align === "center" ? "0 auto" : 0,
+          maxWidth: "24ch",
+          textAlign: align,
+          fontSize: "clamp(26px,3.4vw,52px)",
+          fontWeight: 600,
+          letterSpacing: "-.03em",
+          lineHeight: 1.14,
+          textWrap: "balance",
+        }}
+      >
+        <span style={{ color: "var(--accent,var(--fg))" }}>“</span>
+        {text}
+        <span style={{ color: "var(--accent,var(--fg))" }}>”</span>
+      </Reveal>
+    </section>
+  );
+}
+
 export default function ProjectPage() {
   const { t, lang } = useSite();
   const router = useRouter();
@@ -42,6 +68,29 @@ export default function ProjectPage() {
      are shown in a closing grid so nothing the studio uploads goes unused. */
   const pick = (i: number) => (g.length ? g[i % g.length] : g[i]);
   const extras = g.slice(4);
+
+  /* Quotes are spread across the page in distinct zones instead of a numbered
+     block: [0] is the big dark statement mid-page; [1] and [2] become editorial
+     pull-quotes higher and lower; anything beyond trails after the gallery. */
+  const q = work.quotes;
+  const upperQuote = q[1];
+  const lowerQuote = q[2];
+  const trailingQuotes = q.slice(3);
+
+  /* Closing gallery keeps the page's composition rhythm — one full-bleed image,
+     then a pair, then a pair, and so on — rather than a uniform grid. */
+  const extraRows: string[][] = [];
+  {
+    const pattern = [1, 2, 2];
+    let i = 0;
+    let p = 0;
+    while (i < extras.length) {
+      const n = Math.min(pattern[p % pattern.length], extras.length - i);
+      extraRows.push(extras.slice(i, i + n));
+      i += n;
+      p++;
+    }
+  }
 
   const toggleVid = () => {
     const v = videoRef.current;
@@ -114,6 +163,8 @@ export default function ProjectPage() {
         </Reveal>
       </section>
 
+      {upperQuote && <PullQuote text={upperQuote} />}
+
       {/* ---------- FILM (only when a project video exists) ---------- */}
       {work.video && (
         <div style={{ position: "relative", height: "100vh", overflow: "hidden", background: "#000" }}>
@@ -145,10 +196,10 @@ export default function ProjectPage() {
 
       {/* ---------- TWO-UP GALLERY ---------- */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: 0 }}>
-        <div className="casepanel" style={{ position: "relative", minHeight: "clamp(360px,64vh,640px)", overflow: "hidden" }}>
+        <div className="casepanel" style={{ position: "relative", minHeight: "clamp(440px,82vh,760px)", overflow: "hidden" }}>
           <div className="casemedia" style={mediaAbs(pick(1))} />
         </div>
-        <div className="casepanel" style={{ position: "relative", minHeight: "clamp(360px,64vh,640px)", overflow: "hidden" }}>
+        <div className="casepanel" style={{ position: "relative", minHeight: "clamp(440px,82vh,760px)", overflow: "hidden" }}>
           <div className="casemedia" style={mediaAbs(pick(2))} />
         </div>
       </div>
@@ -173,32 +224,42 @@ export default function ProjectPage() {
         ))}
       </section>
 
+      {lowerQuote && <PullQuote text={lowerQuote} align="center" />}
+
       <FeaturePanel img={pick(3)} />
 
-      {/* ---------- EXTRA IMAGES (anything beyond the four fixed slots) ---------- */}
-      {extras.length > 0 && (
-        <section style={{ padding: "clamp(70px,11vh,140px) clamp(20px,6vw,110px) 0" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,340px),1fr))", gap: "clamp(14px,1.6vw,26px)" }}>
-            {extras.map((src, i) => (
-              <div key={src} className="casepanel" style={{ position: "relative", overflow: "hidden", borderRadius: 14, aspectRatio: extras.length % 2 === 1 && i === 0 ? "16 / 9" : "4 / 5", gridColumn: extras.length % 2 === 1 && i === 0 ? "1 / -1" : "auto" }}>
-                <div className="casemedia" style={mediaAbs(src)} />
+      {/* ---------- CLOSING GALLERY (composition rhythm: full image, then pairs) ---------- */}
+      {extraRows.length > 0 && (
+        <section style={{ padding: "clamp(70px,11vh,140px) clamp(20px,6vw,110px)" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "clamp(16px,2vw,30px)" }}>
+            {extraRows.map((row, ri) => (
+              <div key={ri} style={{ display: "flex", flexWrap: "wrap", gap: "clamp(16px,2vw,30px)" }}>
+                {row.map((src) => (
+                  <div
+                    key={src}
+                    className="casepanel"
+                    style={{
+                      position: "relative",
+                      overflow: "hidden",
+                      borderRadius: 14,
+                      ...(row.length === 1
+                        ? { flex: "1 1 100%", height: "clamp(460px,84vh,860px)" }
+                        : { flex: "1 1 320px", minWidth: 0, aspectRatio: "4 / 5" }),
+                    }}
+                  >
+                    <div className="casemedia" style={mediaAbs(src)} />
+                  </div>
+                ))}
               </div>
             ))}
           </div>
         </section>
       )}
 
-      {/* ---------- REMAINING QUOTES ---------- */}
-      {work.quotes.length > 1 && (
-        <section style={{ padding: "clamp(80px,13vh,150px) clamp(20px,6vw,110px)", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: "clamp(30px,4vw,64px)" }}>
-          {work.quotes.slice(1).map((q, i) => (
-            <Reveal key={i} style={{ display: "flex", flexDirection: "column", gap: 16, paddingTop: 26, borderTop: "1px solid var(--line)" }}>
-              <span className="mono" style={{ fontSize: 13, color: "var(--accent,var(--fg))" }}>0{i + 2}</span>
-              <p style={{ fontSize: "clamp(20px,1.9vw,28px)", fontWeight: 600, letterSpacing: "-.02em", lineHeight: 1.24 }}>{q}</p>
-            </Reveal>
-          ))}
-        </section>
-      )}
+      {/* ---------- TRAILING PULL-QUOTES (any quotes beyond the three placed above) ---------- */}
+      {trailingQuotes.map((quote, i) => (
+        <PullQuote key={i} text={quote} align={i % 2 === 0 ? "center" : "left"} />
+      ))}
 
       {/* ---------- NEXT PROJECT ---------- */}
       <button
