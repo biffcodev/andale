@@ -38,15 +38,26 @@ Cada proyecto tiene su propia carpeta, nombrada por su **slug**:
 
 ```
 public/uploads/projects/<slug>/
-  cover.webp   ← portada: hero del proyecto + card en /work + panel en la home
-  1.webp       ← panel grande (full screen, con zoom al scrollear)
-  2.webp       ← galería, mitad izquierda
-  3.webp       ← galería, mitad derecha
-  4.webp       ← segundo panel grande
 ```
 
-Ejemplo para Casa Capo: `public/uploads/projects/casa-capo/cover.webp`,
-`.../1.webp`, `.../2.webp`, `.../3.webp`, `.../4.webp`.
+**Subí las imágenes con el nombre que quieras** (por ejemplo, tal cual salen de
+GitHub: `CASA_CAPO-2.webp`, `CASA_CAPO-4.webp`, …). El sitio las detecta solo:
+antes de cada build se regenera un índice (`lib/projects.images.json`) que lee
+la carpeta y ordena los archivos de forma natural (2, 4, 5 … 10, 11). **No hay
+que renombrar nada ni tocar código.**
+
+Orden y uso:
+
+- **Portada** = la primera imagen. Para elegir cuál es, nombrá ese archivo
+  `cover.webp` (tiene prioridad); si no, es la primera en orden natural.
+- La página interna del proyecto usa las siguientes cuatro como paneles grandes
+  y galería, **y cualquier imagen extra aparece en una grilla al final** — así
+  no se desperdicia ninguna que subas.
+- Con una sola imagen ya se ve la portada en el listado y la home. Las que
+  falten muestran placeholder rayado.
+
+Ejemplo real (Casa Capo, 11 imágenes): subiste `CASA_CAPO-2.webp` … `-13.webp`
+y el sitio arma portada + paneles + grilla final automáticamente.
 
 **Slugs de los 8 proyectos actuales:**
 
@@ -61,10 +72,7 @@ Ejemplo para Casa Capo: `public/uploads/projects/casa-capo/cover.webp`,
 | `barbale` | Barbalé |
 | `poligono-cordoba` | Polígono Córdoba |
 
-Con solo `cover.webp` ya se ve la portada en el listado y la home; las `1–4`
-enriquecen la página interna del proyecto. Podés subir las que tengas; las que
-falten muestran placeholder.
-Portada (`cover`) apaisada ~1600×1000 px; galería libre, ~1600 px lado largo.
+Portada apaisada ~1600×1000 px; galería libre, ~1600 px lado largo.
 
 ---
 
@@ -85,8 +93,8 @@ Los SVG de marca (`logo.svg`, `logo-bold.svg`, `isologo.svg`) ya están cargados
 
 1. Pasame el texto (en español alcanza; yo genero EN/PT/IT para tu revisión).
 2. Yo agrego el bloque del proyecto en `lib/projects.ts` (con su `slug`).
-3. Subís las imágenes a `public/uploads/projects/<slug>/` como arriba.
-4. Push a `main` → queda en vivo.
+3. Subís las imágenes a `public/uploads/projects/<slug>/` (cualquier nombre).
+4. Push a `main` → Vercel regenera el índice y queda en vivo.
 
 El texto vive en `lib/projects.ts` (español, fuente) y las traducciones en
 `lib/projects.i18n.json`. Cambiar una frase = editar ese archivo, sin tocar
@@ -102,5 +110,7 @@ Para que el sitio cargue rápido, exportá `.webp` de calidad ~80:
 - Portadas de proyecto: **≤ 600 KB**.
 - Video del hero: idealmente **≤ 5 MB**, 1080p, sin audio.
 
-(Las fotos del equipo actuales pesan 1.4–2.8 MB; funcionan, pero conviene
-comprimirlas para mejorar la carga. Si querés, las optimizo yo.)
+No hace falta que las comprimas vos: subilas como estén y corré
+`npm run optimize:images` (o pedímelo), que reescribe en `.webp` calidad ~80
+cualquier archivo de más de ~500 KB. Así se optimizaron las fotos del equipo
+(1.4–2.8 MB → 32–71 KB) y las de Casa Capo (hasta 2 MB → 32–205 KB).

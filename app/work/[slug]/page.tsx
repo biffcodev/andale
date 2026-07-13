@@ -37,6 +37,11 @@ export default function ProjectPage() {
   const all = getProjects(lang);
   const next = all[(work.index + 1) % all.length];
   const g = work.gallery;
+  /* The layout uses four fixed image slots; pick() cycles so a project with
+     fewer photos never lands on `undefined`, and any images beyond the four
+     are shown in a closing grid so nothing the studio uploads goes unused. */
+  const pick = (i: number) => (g.length ? g[i % g.length] : g[i]);
+  const extras = g.slice(4);
 
   const toggleVid = () => {
     const v = videoRef.current;
@@ -91,7 +96,7 @@ export default function ProjectPage() {
         </Reveal>
       </section>
 
-      <FeaturePanel img={g[0]} />
+      <FeaturePanel img={pick(0)} />
 
       {/* ---------- CHALLENGE / APPROACH ---------- */}
       <section style={{ padding: "clamp(80px,14vh,170px) clamp(20px,6vw,110px)", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "clamp(40px,6vw,110px)", alignItems: "start" }}>
@@ -141,10 +146,10 @@ export default function ProjectPage() {
       {/* ---------- TWO-UP GALLERY ---------- */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: 0 }}>
         <div className="casepanel" style={{ position: "relative", minHeight: "clamp(360px,64vh,640px)", overflow: "hidden" }}>
-          <div className="casemedia" style={mediaAbs(g[1])} />
+          <div className="casemedia" style={mediaAbs(pick(1))} />
         </div>
         <div className="casepanel" style={{ position: "relative", minHeight: "clamp(360px,64vh,640px)", overflow: "hidden" }}>
-          <div className="casemedia" style={mediaAbs(g[2])} />
+          <div className="casemedia" style={mediaAbs(pick(2))} />
         </div>
       </div>
 
@@ -168,7 +173,20 @@ export default function ProjectPage() {
         ))}
       </section>
 
-      <FeaturePanel img={g[3]} />
+      <FeaturePanel img={pick(3)} />
+
+      {/* ---------- EXTRA IMAGES (anything beyond the four fixed slots) ---------- */}
+      {extras.length > 0 && (
+        <section style={{ padding: "clamp(70px,11vh,140px) clamp(20px,6vw,110px) 0" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,340px),1fr))", gap: "clamp(14px,1.6vw,26px)" }}>
+            {extras.map((src, i) => (
+              <div key={src} className="casepanel" style={{ position: "relative", overflow: "hidden", borderRadius: 14, aspectRatio: extras.length % 2 === 1 && i === 0 ? "16 / 9" : "4 / 5", gridColumn: extras.length % 2 === 1 && i === 0 ? "1 / -1" : "auto" }}>
+                <div className="casemedia" style={mediaAbs(src)} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ---------- REMAINING QUOTES ---------- */}
       {work.quotes.length > 1 && (

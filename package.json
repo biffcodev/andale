@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "Andale — Branding & Strategy studio website",
   "scripts": {
+    "predev": "node scripts/build-image-manifest.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/build-image-manifest.mjs",
     "build": "next build",
     "start": "next start",
+    "manifest:images": "node scripts/build-image-manifest.mjs",
     "optimize:images": "node scripts/optimize-images.mjs"
   },
   "repository": {
