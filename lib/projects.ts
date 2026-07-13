@@ -1,4 +1,10 @@
 import type { Lang } from "./i18n";
+import translations from "./projects.i18n.json";
+
+/* EN/PT/IT translations of each project, keyed by slug. Generated from the
+   Spanish source and kept in a separate data file so the copy is easy to
+   review and replace. Missing slugs/languages fall back to Spanish. */
+const TRANSLATIONS = translations as Record<string, Partial<Record<Lang, ProjectContent>>>;
 
 /* ---------------------------------------------------------------------------
    Project content model.
@@ -329,7 +335,8 @@ export interface LocalizedProject extends ProjectContent {
 }
 
 function pickContent(p: Project, lang: Lang): ProjectContent {
-  return (p.content[lang] || p.content.ES || p.content.EN || Object.values(p.content)[0]) as ProjectContent;
+  const translated = TRANSLATIONS[p.slug]?.[lang];
+  return (translated || p.content[lang] || p.content.ES || p.content.EN || Object.values(p.content)[0]) as ProjectContent;
 }
 
 export function getProjects(lang: Lang): LocalizedProject[] {
