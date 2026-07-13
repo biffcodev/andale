@@ -7,8 +7,9 @@ import { Footer } from "@/components/footer";
 import { PillButton } from "@/components/pill-button";
 import { EASE, Reveal, RevealGroup, RevealItem } from "@/components/reveal";
 import { useSite } from "@/components/site-context";
-import { enrichWorks, HERO_IMGS, HERO_VIDEO, imgUrl, mediaAbs } from "@/lib/content";
+import { HERO_IMGS, HERO_VIDEO, imgUrl, mediaAbs } from "@/lib/content";
 import { STRINGS } from "@/lib/i18n";
+import { getProjects } from "@/lib/projects";
 
 const fadeUp = (delay: number) => ({
   initial: { opacity: 0, y: 22 },
@@ -33,7 +34,7 @@ function ScrollCue({ label, light }: { label: string; light?: boolean }) {
 export default function HomePage() {
   const { t, lang } = useSite();
   const router = useRouter();
-  const works = enrichWorks(t);
+  const works = getProjects(lang);
   const panels = works.slice(0, 5);
 
   /* --- hero video --- */
@@ -162,14 +163,14 @@ export default function HomePage() {
         >
           {panels.map((w) => (
             <article key={w.slug} className="casepanel" style={{ flex: "0 0 100%", height: "100%", position: "relative", scrollSnapAlign: "start", overflow: "hidden" }}>
-              <div className="casemedia" style={mediaAbs(w.resolvedImg)} />
+              <div className="casemedia" style={mediaAbs(w.cover)} />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(0,0,0,.42) 0%,rgba(0,0,0,0) 24%,rgba(0,0,0,0) 46%,rgba(0,0,0,.72) 100%)" }} />
               <span style={{ position: "absolute", top: "clamp(96px,13vh,132px)", right: "clamp(20px,5vw,64px)", fontSize: "clamp(64px,9vw,150px)", fontWeight: 800, letterSpacing: "-.04em", color: "rgba(255,255,255,.16)", lineHeight: 1 }}>
                 {w.num}
               </span>
               <div style={{ position: "absolute", left: "clamp(20px,6vw,90px)", bottom: "clamp(96px,15vh,150px)", right: "clamp(20px,6vw,90px)", color: "#fff", maxWidth: 900 }}>
                 <span className="mono" style={{ fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase", color: "rgba(255,255,255,.72)" }}>
-                  {w.client} — {w.year}
+                  {w.client}{w.year ? ` — ${w.year}` : ` — ${w.sector}`}
                 </span>
                 <h3 style={{ fontSize: "clamp(34px,6vw,88px)", fontWeight: 800, letterSpacing: "-.035em", lineHeight: 1, marginTop: 18, maxWidth: "15ch", textWrap: "balance" }}>{w.title}</h3>
                 <span className="mono" style={{ display: "block", fontSize: 13, letterSpacing: ".06em", color: "rgba(255,255,255,.72)", marginTop: 22 }}>{w.tags}</span>

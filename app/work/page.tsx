@@ -5,15 +5,16 @@ import { useEffect, useRef, useState } from "react";
 import { Footer } from "@/components/footer";
 import { Reveal } from "@/components/reveal";
 import { useSite } from "@/components/site-context";
-import { enrichWorks, coverBase, HERO_VIDEO, mediaAbs, WORK_IMGS, imgUrl, type EnrichedWork } from "@/lib/content";
+import { coverBase, HERO_VIDEO, mediaAbs, WORK_IMGS, imgUrl } from "@/lib/content";
 import { STRINGS } from "@/lib/i18n";
+import { getProjects, type LocalizedProject } from "@/lib/projects";
 
 const CASE_WORD: Record<string, string> = { EN: "case studies", ES: "casos", PT: "casos", IT: "casi" };
 
 export default function WorkPage() {
   const { t, lang } = useSite();
   const router = useRouter();
-  const works = enrichWorks(t);
+  const works = getProjects(lang);
   const panels = works.slice(0, 5);
   const gridSrc = works.slice(5);
 
@@ -62,7 +63,7 @@ export default function WorkPage() {
 
   /* "More projects" rows in the design's 2-1-2-3-1-2 rhythm */
   const rowPattern = [2, 1, 2, 3, 1, 2];
-  const rows: { items: EnrichedWork[]; ar: string }[] = [];
+  const rows: { items: LocalizedProject[]; ar: string }[] = [];
   let gIdx = 0;
   let pIdx = 0;
   while (gIdx < gridSrc.length) {
@@ -135,7 +136,7 @@ export default function WorkPage() {
           className="casepanel"
           style={{ position: "relative", display: "block", width: "100%", height: "100vh", border: "none", padding: 0, margin: 0, cursor: "pointer", overflow: "hidden", textAlign: "left", background: "var(--bg)" }}
         >
-          <div className="casemedia" style={mediaAbs(w.resolvedImg)} />
+          <div className="casemedia" style={mediaAbs(w.cover)} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(0,0,0,.34) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,0) 45%,rgba(0,0,0,.74) 100%)" }} />
           <div style={{ position: "absolute", top: "clamp(28px,5vw,64px)", left: "clamp(20px,6vw,90px)", right: "clamp(20px,6vw,90px)", display: "flex", alignItems: "center", justifyContent: "space-between", color: "#fff" }}>
             <span className="mono" style={{ fontSize: 13, letterSpacing: ".22em", color: "rgba(255,255,255,.85)" }}>{w.sector}</span>
@@ -145,7 +146,7 @@ export default function WorkPage() {
           </div>
           <div style={{ position: "absolute", left: "clamp(20px,6vw,90px)", bottom: "clamp(40px,8vh,80px)", right: "clamp(20px,6vw,90px)", color: "#fff" }}>
             <span className="mono" style={{ fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase", color: "rgba(255,255,255,.72)" }}>
-              {w.client} — {w.year}
+              {w.client}{w.year ? ` — ${w.year}` : ""}
             </span>
             <h2 style={{ fontSize: "clamp(40px,7vw,104px)", fontWeight: 800, letterSpacing: "-.04em", lineHeight: 0.98, marginTop: 14, maxWidth: "16ch", textWrap: "balance" }}>{w.title}</h2>
             <span className="pillbtn" style={{ marginTop: 26, display: "inline-flex", alignItems: "center", padding: "14px 26px", borderRadius: 999, background: "#fff", color: "#0A0A0A", fontSize: 15, fontWeight: 600 }}>
@@ -171,11 +172,11 @@ export default function WorkPage() {
                   style={{ flex: isMobile ? "1 1 100%" : "1 1 0", minWidth: 0, textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer", transition: "transform .5s cubic-bezier(.22,1,.36,1)", fontFamily: "inherit", color: "var(--fg)" }}
                 >
                   <div style={{ position: "relative", overflow: "hidden", borderRadius: 14, aspectRatio: row.ar }}>
-                    <div className="casemedia" style={{ position: "absolute", inset: 0, transition: "transform .8s ease", ...coverBase(w.resolvedImg) }} />
+                    <div className="casemedia" style={{ position: "absolute", inset: 0, transition: "transform .8s ease", ...coverBase(w.cover) }} />
                   </div>
                   <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 14, marginTop: 16 }}>
                     <span className="mono" style={{ fontSize: 11, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--muted)" }}>
-                      {w.client} — {w.year}
+                      {w.client}{w.year ? ` — ${w.year}` : ""}
                     </span>
                     <span className="mono" style={{ fontSize: 11, letterSpacing: ".14em", color: "var(--muted)" }}>{w.sector}</span>
                   </div>
