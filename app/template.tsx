@@ -1,12 +1,20 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { EASE } from "@/components/reveal";
 
-/* Page transition: accent sweep across the top + content easing up, as in the design */
+/* Page transition: accent sweep across the top + content easing up, as in the design.
+   A template remounts on every navigation, so the mount effect resets scroll to the
+   very top of each page (Next's default restoration otherwise left a few px offset). */
 export default function Template({ children }: { children: ReactNode }) {
   const reduce = useReducedMotion();
+
+  useEffect(() => {
+    if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+  }, []);
+
   if (reduce) return <>{children}</>;
   return (
     <>

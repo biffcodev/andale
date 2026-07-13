@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { STRINGS } from "@/lib/i18n";
 import { BOOK_HREF, FOOTER_SOCIAL } from "@/lib/content";
 import { useSite } from "./site-context";
@@ -16,6 +17,14 @@ export function Footer() {
   const router = useRouter();
   const legal = STRINGS.legalLinks[lang];
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 760);
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   const footerNav = [
     { label: t.nav.contact, href: "/contact" },
     { label: t.nav.services, href: "/services" },
@@ -27,26 +36,48 @@ export function Footer() {
     { label: legal.terms, href: "/terms" },
   ];
 
+  const wordmark = (
+    <div
+      aria-hidden="true"
+      style={{
+        width: "100%", aspectRatio: "536.45 / 123.77", background: "var(--fg)",
+        WebkitMask: "url('/uploads/logo-bold.svg') center / contain no-repeat",
+        mask: "url('/uploads/logo-bold.svg') center / contain no-repeat",
+        pointerEvents: "none",
+      }}
+    />
+  );
+
   return (
-    <footer style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "flex-start", overflow: "hidden", position: "relative" }}>
-      {/* Giant wordmark bleeding off the bottom */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute", left: "clamp(40px,10vw,180px)", right: "clamp(40px,10vw,180px)", bottom: "clamp(-84px,-6.5vw,-30px)",
-          aspectRatio: "536.45 / 123.77", background: "var(--fg)",
-          WebkitMask: "url('/uploads/logo-bold.svg') center / contain no-repeat",
-          mask: "url('/uploads/logo-bold.svg') center / contain no-repeat",
-          pointerEvents: "none", zIndex: 0,
-        }}
-      />
-      <div style={{ position: "relative", zIndex: 1, padding: "clamp(96px,15vh,180px) clamp(20px,6vw,110px) clamp(40px,6vh,70px)" }}>
+    <footer
+      style={{
+        minHeight: isMobile ? "auto" : "100vh",
+        display: "flex", flexDirection: "column", justifyContent: "flex-start",
+        overflow: "hidden", position: "relative",
+        paddingBottom: isMobile ? "clamp(28px,7vw,44px)" : 0,
+      }}
+    >
+      {/* Desktop: giant wordmark bleeding off the bottom, behind the content */}
+      {!isMobile && (
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute", left: "clamp(40px,10vw,180px)", right: "clamp(40px,10vw,180px)", bottom: "clamp(-84px,-6.5vw,-30px)",
+            aspectRatio: "536.45 / 123.77", background: "var(--fg)",
+            WebkitMask: "url('/uploads/logo-bold.svg') center / contain no-repeat",
+            mask: "url('/uploads/logo-bold.svg') center / contain no-repeat",
+            pointerEvents: "none", zIndex: 0,
+          }}
+        />
+      )}
+
+      <div style={{ position: "relative", zIndex: 1, padding: isMobile ? "clamp(80px,20vw,120px) clamp(20px,6vw,110px) clamp(28px,7vw,44px)" : "clamp(96px,15vh,180px) clamp(20px,6vw,110px) clamp(40px,6vh,70px)" }}>
         <a
           className="pillbtn"
           href={BOOK_HREF}
           target="_blank"
           rel="noopener"
-          style={{ display: "inline-flex", alignItems: "center", padding: "18px 34px", borderRadius: 999, background: "var(--accent,var(--fg))", color: "#fff", fontSize: "clamp(16px,1.5vw,19px)", fontWeight: 600, width: "max-content" }}
+          style={{ display: "inline-flex", alignItems: "center", padding: "18px 34px", borderRadius: 999, background: "var(--accent,var(--fg))", color: "#fff", fontSize: "clamp(16px,1.5vw,19px)", fontWeight: 600, width: "max-content", maxWidth: "100%" }}
         >
           {STRINGS.ctaTxt[lang].book}{" "}
           <span className="pillarrow">
@@ -54,13 +85,18 @@ export function Footer() {
           </span>
         </a>
       </div>
+
       <div
         style={{
-          position: "relative", zIndex: 1, padding: "clamp(20px,3vh,40px) clamp(20px,6vw,110px) 0",
-          display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))", gap: "clamp(34px,5vw,80px)", alignItems: "start",
+          position: "relative", zIndex: 1,
+          padding: isMobile ? "0 clamp(20px,6vw,110px)" : "clamp(20px,3vh,40px) clamp(20px,6vw,110px) 0",
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(auto-fit,minmax(210px,1fr))",
+          gap: isMobile ? "clamp(26px,7vw,40px)" : "clamp(34px,5vw,80px)",
+          alignItems: "start",
         }}
       >
-        <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-.01em" }}>© 2026 Andale</div>
+        <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-.01em", gridColumn: isMobile ? "1 / -1" : "auto" }}>© 2026 Andale</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {footerNav.map((ln) => (
             <a key={ln.href} className="arrowlink" href={ln.href} onClick={(e) => { e.preventDefault(); router.push(ln.href); }}>
@@ -77,7 +113,7 @@ export function Footer() {
             </a>
           ))}
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", gap: "clamp(24px,3vw,50px)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: "clamp(24px,3vw,50px)", gridColumn: isMobile ? "1 / -1" : "auto" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {FOOTER_SOCIAL.map((s) => (
               <a key={s.label} className="arrowlink" href={s.u} target="_blank" rel="noopener">
@@ -97,6 +133,11 @@ export function Footer() {
           </button>
         </div>
       </div>
+
+      {/* Mobile: wordmark sits in normal flow at the bottom, no overlap */}
+      {isMobile && (
+        <div style={{ position: "relative", zIndex: 1, padding: "clamp(48px,14vw,90px) clamp(20px,6vw,110px) 0" }}>{wordmark}</div>
+      )}
     </footer>
   );
 }

@@ -51,6 +51,14 @@ export default function HomePage() {
     }
   };
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 760);
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   /* --- horizontal work rail: vertical wheel becomes horizontal panel steps --- */
   const railRef = useRef<HTMLDivElement>(null);
   const cool = useRef(false);
@@ -142,7 +150,7 @@ export default function HomePage() {
       </section>
 
       {/* ---------- WORK RAIL ---------- */}
-      <section id="work" style={{ height: "100vh", position: "relative", overflow: "hidden" }}>
+      <section id="work" style={{ height: isMobile ? "88vh" : "100vh", position: "relative", overflow: "hidden" }}>
         <div
           ref={railRef}
           data-rail="1"
@@ -150,7 +158,7 @@ export default function HomePage() {
             const el = e.currentTarget;
             setProg(el.scrollLeft / (el.scrollWidth - el.clientWidth || 1));
           }}
-          style={{ position: "absolute", inset: 0, display: "flex", overflowX: "auto", overflowY: "hidden", scrollSnapType: "x mandatory", scrollbarWidth: "none" }}
+          style={{ position: "absolute", inset: 0, display: "flex", overflowX: "auto", overflowY: "hidden", scrollSnapType: "x mandatory", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y" }}
         >
           {panels.map((w) => (
             <article key={w.slug} className="casepanel" style={{ flex: "0 0 100%", height: "100%", position: "relative", scrollSnapAlign: "start", overflow: "hidden" }}>
@@ -193,7 +201,7 @@ export default function HomePage() {
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <span
               className="mono"
-              style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 11, letterSpacing: ".18em", textTransform: "uppercase", color: "#fff", border: "1px solid rgba(255,255,255,.4)", background: "rgba(0,0,0,.28)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", padding: "7px 13px", borderRadius: 999 }}
+              style={{ display: isMobile ? "none" : "inline-flex", alignItems: "center", gap: 8, fontSize: 11, letterSpacing: ".18em", textTransform: "uppercase", color: "#fff", border: "1px solid rgba(255,255,255,.4)", background: "rgba(0,0,0,.28)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", padding: "7px 13px", borderRadius: 999 }}
             >
               <svg width="14" height="10" viewBox="0 0 20 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M4 1 1 5l3 4M16 1l3 4-3 4M1 5h18" /></svg>
               {t.axisLabel}

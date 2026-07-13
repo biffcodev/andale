@@ -23,22 +23,18 @@ export function Loader() {
             display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
           }}
         >
-          <div style={{ position: "relative", width: LOADER_LOGO_W, height: "clamp(38px,8vw,86px)" }}>
-            <div
-              style={{
-                position: "absolute", inset: 0, background: "var(--line)",
-                WebkitMask: "url('/uploads/logo-bold.svg') left center / contain no-repeat",
-                mask: "url('/uploads/logo-bold.svg') left center / contain no-repeat",
-              }}
-            />
-            <div
-              style={{
-                position: "absolute", top: 0, bottom: 0, left: 0,
-                width: loadPct + "%", overflow: "hidden", background: "var(--fg)",
-                WebkitMask: `url('/uploads/logo-bold.svg') left center / ${LOADER_LOGO_W} 100% no-repeat`,
-                mask: `url('/uploads/logo-bold.svg') left center / ${LOADER_LOGO_W} 100% no-repeat`,
-              }}
-            />
+          {/* Single mask on the parent so the fill and the base can never drift apart */}
+          <div
+            style={{
+              position: "relative", width: LOADER_LOGO_W, aspectRatio: "536.45 / 123.77",
+              WebkitMaskImage: "url('/uploads/logo-bold.svg')", maskImage: "url('/uploads/logo-bold.svg')",
+              WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat",
+              WebkitMaskPosition: "center", maskPosition: "center",
+              WebkitMaskSize: "contain", maskSize: "contain",
+            }}
+          >
+            <div style={{ position: "absolute", inset: 0, background: "var(--line)" }} />
+            <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: loadPct + "%", background: "var(--fg)", transition: "width .12s linear" }} />
           </div>
           <div
             className="mono"

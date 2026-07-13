@@ -75,7 +75,7 @@ export function Nav() {
     { label: t.nav.contact, href: "/contact" },
   ];
 
-  const navCollapsed = collapsed && !isMobile;
+  const navCollapsed = collapsed;
 
   const navBase: CSSProperties = {
     position: "fixed", top: "clamp(14px,2vh,22px)", left: "50%", zIndex: 200,

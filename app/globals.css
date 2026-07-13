@@ -59,14 +59,6 @@ html[data-theme="dark"] {
 
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y proximity;
-}
-
-main > section,
-main > footer,
-main > button,
-main > div[data-snap] {
-  scroll-snap-align: start;
 }
 
 body {
