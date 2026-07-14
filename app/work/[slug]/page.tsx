@@ -47,20 +47,19 @@ function ImageRow({ imgs, mobile }: { imgs: string[]; mobile: boolean }) {
   );
 }
 
-/* A delicate pull-quote — the one large voice on the page, light italic, quotation
+/* The one large voice on the page — centred, upright (never italic), quotation
    marks in the same colour as the text. */
-function PullQuote({ text, align = "left" }: { text: string; align?: "left" | "center" }) {
+function PullQuote({ text }: { text: string }) {
   return (
     <section style={{ padding: "clamp(80px,14vh,160px) clamp(20px,6vw,110px)" }}>
       <Reveal
         as="blockquote"
         style={{
-          margin: align === "center" ? "0 auto" : 0,
+          margin: "0 auto",
           maxWidth: "26ch",
-          textAlign: align,
+          textAlign: "center",
           fontSize: "clamp(26px,3.4vw,52px)",
           fontWeight: 400,
-          fontStyle: "italic",
           letterSpacing: "-.02em",
           lineHeight: 1.24,
           color: "var(--fg)",
@@ -100,18 +99,6 @@ export default function ProjectPage() {
     onResize();
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, []);
-
-  /* Soft snapping on a project page: the copy and photos scroll freely (nothing
-     is skipped), and only the next-project block gives a gentle stop as you reach
-     it. Proximity (not the site-wide mandatory) so reading is never pulled away. */
-  useEffect(() => {
-    const html = document.documentElement;
-    const prev = html.style.scrollSnapType;
-    html.style.scrollSnapType = "y proximity";
-    return () => {
-      html.style.scrollSnapType = prev;
-    };
   }, []);
 
   if (!work) notFound();
@@ -208,7 +195,7 @@ export default function ProjectPage() {
   blocks.push(nextRow());
 
   if (q[1]) {
-    blocks.push(<PullQuote key="q1" text={q[1]} align="center" />);
+    blocks.push(<PullQuote key="q1" text={q[1]} />);
     blocks.push(nextRow());
   }
   if (q[2]) {
@@ -216,7 +203,7 @@ export default function ProjectPage() {
     blocks.push(nextRow());
   }
   q.slice(3).forEach((quote, i) => {
-    blocks.push(<PullQuote key={`qx-${i}`} text={quote} align={i % 2 === 0 ? "center" : "left"} />);
+    blocks.push(<PullQuote key={`qx-${i}`} text={quote} />);
     blocks.push(nextRow());
   });
 

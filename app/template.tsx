@@ -12,8 +12,20 @@ export default function Template({ children }: { children: ReactNode }) {
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const html = document.documentElement;
     if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual";
+    /* Every navigation must open the new page at its exact top. Turn scroll-snap
+       off for the reset so it can't re-snap the jump to another block (which was
+       landing pages at the bottom), jump to the top, then restore snap next frame
+       once the layout has settled. */
+    const prev = html.style.scrollSnapType;
+    html.style.scrollSnapType = "none";
     window.scrollTo(0, 0);
+    const raf = requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+      html.style.scrollSnapType = prev;
+    });
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   if (reduce) return <>{children}</>;

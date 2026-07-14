@@ -59,11 +59,11 @@ html[data-theme="dark"] {
 
 html {
   scroll-behavior: smooth;
-  /* Full-viewport "stops": consecutive full-screen blocks (marked .snap) settle
-     one-per-scroll onto each block. Where a shorter text section sits between two
-     blocks the gap exceeds one viewport, so the browser still lets you scroll and
-     read it freely before snapping onto the next block. */
-  scroll-snap-type: y mandatory;
+  /* Gentle full-viewport "stops": full-screen blocks (marked .snap) settle onto
+     the viewport as you reach them, but scrolling is never forced — proximity
+     (not mandatory) so reading is never pulled away and a programmatic scroll
+     (e.g. reset-to-top on navigation) is never re-snapped to another block. */
+  scroll-snap-type: y proximity;
 }
 
 /* A full-viewport block that scrolling settles onto. */
