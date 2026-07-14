@@ -114,6 +114,7 @@ export const PROJECTS: Project[] = [
     slug: "casa-capo",
     client: "Casa Capo",
     ...img("casa-capo"),
+    video: "/uploads/projects/casa-capo/colores.mp4",
     content: {
       ES: {
         title: "Una nueva categoría gastronómica",

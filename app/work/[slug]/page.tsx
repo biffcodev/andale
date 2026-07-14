@@ -6,8 +6,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import { Footer } from "@/components/footer";
 import { Reveal } from "@/components/reveal";
 import { useSite } from "@/components/site-context";
-import { imgUrl, mediaAbs } from "@/lib/content";
-import { STRINGS } from "@/lib/i18n";
+import { mediaAbs } from "@/lib/content";
 import { getProject, getProjects } from "@/lib/projects";
 
 const KICKER: CSSProperties = { fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--accent,var(--fg))" };
@@ -72,6 +71,17 @@ function PullQuote({ text }: { text: string }) {
   );
 }
 
+/* A project's colour/motion clip, shown on a clean white field, centred and never
+   cropped (object-fit is moot — it renders at its own size, capped to the frame).
+   Autoplays muted on a loop, like a moving still. */
+function ColorVideo({ src }: { src: string }) {
+  return (
+    <section style={{ height: "100vh", background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", padding: "clamp(24px,6vw,96px)", overflow: "hidden" }}>
+      <video src={src} autoPlay muted loop playsInline style={{ maxWidth: "100%", maxHeight: "100%", width: "auto", height: "auto", display: "block" }} />
+    </section>
+  );
+}
+
 /* A text section laid out label-left / content-right so the copy spans the width. */
 function TextBlock({ kicker, mobile, children }: { kicker: string; mobile: boolean; children: ReactNode }) {
   return (
@@ -90,9 +100,6 @@ export default function ProjectPage() {
   const params = useParams<{ slug: string }>();
   const work = getProject(params.slug, lang);
 
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [playing, setPlaying] = useState(false);
-
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth < 760);
@@ -107,18 +114,6 @@ export default function ProjectPage() {
   const next = all[(work.index + 1) % all.length];
   const g = work.gallery;
   const q = work.quotes;
-
-  const toggleVid = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    if (v.paused) {
-      v.play().catch(() => {});
-      setPlaying(true);
-    } else {
-      v.pause();
-      setPlaying(false);
-    }
-  };
 
   const meta = [
     { k: t.ui.client, v: work.client },
@@ -184,6 +179,9 @@ export default function ProjectPage() {
     blocks.push(nextRow());
   }
 
+  /* Colour/motion clip — a mid-page moment (not the opening, not the very end). */
+  if (work.video) blocks.push(<ColorVideo key="colorvideo" src={work.video} />);
+
   blocks.push(
     <TextBlock key="outcome" kicker={`04 — ${t.ui.outcomeH}`} mobile={isMobile}>
       <Reveal as="p" style={{ ...LEAD, maxWidth: "44ch", textWrap: "balance" }}>{work.outcome[0]}</Reveal>
@@ -209,37 +207,6 @@ export default function ProjectPage() {
 
   /* Any images left over close out the gallery in the same rhythm. */
   for (let row = nextRow(); row; row = nextRow()) blocks.push(row);
-
-  /* Film (only when a project has a video) — a full-viewport finale. */
-  if (work.video) {
-    blocks.push(
-      <div key="film" style={{ position: "relative", height: "100vh", overflow: "hidden", background: "#000" }}>
-        <video ref={videoRef} muted loop playsInline poster={imgUrl(work.cover)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}>
-          <source src={work.video} type="video/mp4" />
-        </video>
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.6))", opacity: playing ? 0 : 1, transition: "opacity .6s ease" }} />
-        {!playing ? (
-          <button
-            onClick={toggleVid}
-            aria-label="Play"
-            style={{ position: "absolute", inset: 0, zIndex: 10, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 20, background: "none", border: "none", cursor: "pointer", color: "#fff" }}
-          >
-            <span style={{ display: "grid", placeItems: "center", width: "clamp(84px,9vw,120px)", height: "clamp(84px,9vw,120px)", borderRadius: 999, border: "1px solid rgba(255,255,255,.55)", background: "rgba(0,0,0,.28)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
-              <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-            </span>
-            <span style={{ textAlign: "center" }}>
-              <span className="mono" style={{ display: "block", fontSize: 12, letterSpacing: ".24em", textTransform: "uppercase", color: "rgba(255,255,255,.82)" }}>{STRINGS.watchFilm[lang]}</span>
-              <span style={{ display: "block", fontSize: "clamp(24px,3vw,44px)", fontWeight: 800, letterSpacing: "-.03em", lineHeight: 1.05, marginTop: 10 }}>{work.client}</span>
-            </span>
-          </button>
-        ) : (
-          <button onClick={toggleVid} aria-label="Pause" className="frostbtn" style={{ position: "absolute", right: "clamp(20px,6vw,90px)", bottom: "clamp(38px,7vh,66px)", zIndex: 20, width: 54, height: 54, border: "1px solid rgba(255,255,255,.5)" }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" /><rect x="14" y="5" width="4" height="14" /></svg>
-          </button>
-        )}
-      </div>,
-    );
-  }
 
   return (
     <main id="maincontent" role="main">
