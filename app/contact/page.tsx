@@ -40,7 +40,6 @@ export default function ContactPage() {
   return (
     <main id="maincontent" role="main">
       <section
-        className="snap"
         style={{
           minHeight: "100vh", alignContent: "center",
           padding: "clamp(90px,14vh,160px) clamp(20px,6vw,110px) clamp(50px,7vh,80px)",

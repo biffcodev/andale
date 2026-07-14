@@ -45,7 +45,7 @@ export default function StudioPage() {
       </section>
 
       {/* ---------- VALUES ---------- */}
-      <section className="snap" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,14vh,160px) clamp(20px,6vw,110px)" }}>
+      <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,14vh,160px) clamp(20px,6vw,110px)" }}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
           <span className="kicker">{t.ui.valuesH}</span>
           <span className="mono" style={{ fontSize: 12, letterSpacing: ".16em", color: "var(--accent,var(--fg))" }}>{valuesCount}</span>
@@ -62,7 +62,7 @@ export default function StudioPage() {
       </section>
 
       {/* ---------- NUMBERS ---------- */}
-      <section className="snap" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", background: "var(--surface)", padding: "clamp(90px,14vh,160px) clamp(20px,6vw,110px)" }}>
+      <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", background: "var(--surface)", padding: "clamp(90px,14vh,160px) clamp(20px,6vw,110px)" }}>
         <span className="kicker">{STRINGS.numbersLabel[lang]}</span>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "clamp(40px,6vw,90px)", marginTop: "clamp(44px,7vh,80px)" }}>
           {t.stats.map((st) => (
@@ -82,7 +82,7 @@ export default function StudioPage() {
       </section>
 
       {/* ---------- APPROACH ---------- */}
-      <section className="snap" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,14vh,160px) clamp(20px,6vw,110px)" }}>
+      <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,14vh,160px) clamp(20px,6vw,110px)" }}>
         <span className="kicker">{STRINGS.approachKicker[lang]}</span>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "clamp(30px,4vw,70px)", marginTop: "clamp(44px,7vh,80px)" }}>
           {approach.map((ap, i) => (
@@ -96,7 +96,7 @@ export default function StudioPage() {
       </section>
 
       {/* ---------- TEAM ---------- */}
-      <section className="snap" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", background: "var(--surface)", padding: "clamp(96px,14vh,160px) clamp(20px,6vw,110px)" }}>
+      <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", background: "var(--surface)", padding: "clamp(96px,14vh,160px) clamp(20px,6vw,110px)" }}>
         <span className="kicker">{t.ui.teamH}</span>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: "clamp(28px,3vw,52px)", marginTop: "clamp(40px,6vh,70px)" }}>
           {team.map((m, i) => {

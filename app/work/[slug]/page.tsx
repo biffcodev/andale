@@ -2,13 +2,19 @@
 
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { notFound, useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { Reveal } from "@/components/reveal";
 import { useSite } from "@/components/site-context";
 import { imgUrl, mediaAbs } from "@/lib/content";
 import { STRINGS } from "@/lib/i18n";
 import { getProject, getProjects } from "@/lib/projects";
+
+const KICKER: CSSProperties = { fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--accent,var(--fg))" };
+/* One shared, moderate type size for every section's copy (01–04) — bold for the
+   statement, regular/muted for supporting lines. Only the quotes go large. */
+const LEAD: CSSProperties = { fontSize: "clamp(19px,1.7vw,26px)", fontWeight: 600, letterSpacing: "-.015em", lineHeight: 1.34 };
+const BODY: CSSProperties = { fontSize: "clamp(16px,1.35vw,19px)", fontWeight: 400, lineHeight: 1.62, color: "var(--muted)" };
 
 /* Single full-bleed image, full viewport, that settles from 1.22→1 while scrolled
    through (the design's panelReveal view-timeline). */
@@ -31,9 +37,7 @@ function FeaturePanel({ img }: { img: string }) {
 function ImageRow({ imgs, mobile }: { imgs: string[]; mobile: boolean }) {
   if (imgs.length === 1) return <FeaturePanel img={imgs[0]} />;
   return (
-    <div
-      style={{ display: "flex", flexDirection: mobile ? "column" : "row", height: mobile ? "auto" : "100vh", width: "100%" }}
-    >
+    <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", height: mobile ? "auto" : "100vh", width: "100%" }}>
       {imgs.map((src) => (
         <div key={src} className="casepanel" style={{ position: "relative", flex: mobile ? "none" : "1 1 0", minWidth: 0, height: mobile ? "64vh" : "100%", overflow: "hidden" }}>
           <div className="casemedia" style={mediaAbs(src)} />
@@ -43,22 +47,22 @@ function ImageRow({ imgs, mobile }: { imgs: string[]; mobile: boolean }) {
   );
 }
 
-/* A delicate, unobtrusive pull-quote — light italic, quotation marks in the same
-   colour as the text (no accent tint). */
+/* A delicate pull-quote — the one large voice on the page, light italic, quotation
+   marks in the same colour as the text. */
 function PullQuote({ text, align = "left" }: { text: string; align?: "left" | "center" }) {
   return (
-    <section style={{ padding: "clamp(72px,13vh,150px) clamp(20px,6vw,110px)" }}>
+    <section style={{ padding: "clamp(80px,14vh,160px) clamp(20px,6vw,110px)" }}>
       <Reveal
         as="blockquote"
         style={{
           margin: align === "center" ? "0 auto" : 0,
-          maxWidth: "30ch",
+          maxWidth: "26ch",
           textAlign: align,
-          fontSize: "clamp(22px,2.7vw,40px)",
+          fontSize: "clamp(26px,3.4vw,52px)",
           fontWeight: 400,
           fontStyle: "italic",
-          letterSpacing: "-.01em",
-          lineHeight: 1.4,
+          letterSpacing: "-.02em",
+          lineHeight: 1.24,
           color: "var(--fg)",
           textWrap: "balance",
         }}
@@ -69,15 +73,12 @@ function PullQuote({ text, align = "left" }: { text: string; align?: "left" | "c
   );
 }
 
-const KICKER = { fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase" as const, color: "var(--accent,var(--fg))" };
-
-/* A text section laid out as label-left / content-right so the copy spans the
-   width instead of sitting in a narrow left column with empty space beside it. */
+/* A text section laid out label-left / content-right so the copy spans the width. */
 function TextBlock({ kicker, mobile, children }: { kicker: string; mobile: boolean; children: ReactNode }) {
   return (
     <section style={{ padding: "clamp(78px,13vh,160px) clamp(20px,6vw,110px)" }}>
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "minmax(0,180px) minmax(0,1fr)", gap: mobile ? "clamp(16px,3vh,26px)" : "clamp(36px,5vw,96px)", alignItems: "start", maxWidth: 1500 }}>
-        <span className="mono" style={{ ...KICKER, paddingTop: mobile ? 0 : 10 }}>{kicker}</span>
+        <span className="mono" style={{ ...KICKER, paddingTop: mobile ? 0 : 8 }}>{kicker}</span>
         <div>{children}</div>
       </div>
     </section>
@@ -101,13 +102,13 @@ export default function ProjectPage() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  /* No scroll "stops" on a project page — the text blocks sit between full-screen
-     images, and snapping was skipping them. Scroll flows block to block instead.
-     Snapping stays on for the rest of the site. */
+  /* Soft snapping on a project page: the copy and photos scroll freely (nothing
+     is skipped), and only the next-project block gives a gentle stop as you reach
+     it. Proximity (not the site-wide mandatory) so reading is never pulled away. */
   useEffect(() => {
     const html = document.documentElement;
     const prev = html.style.scrollSnapType;
-    html.style.scrollSnapType = "none";
+    html.style.scrollSnapType = "y proximity";
     return () => {
       html.style.scrollSnapType = prev;
     };
@@ -140,8 +141,7 @@ export default function ProjectPage() {
     { k: t.ui.services, v: work.tags },
   ];
 
-  /* Walk the gallery in a single, consistent rhythm (one image, then a pair,
-     then one, then a pair …) and pull the next row wherever an image belongs. */
+  /* Walk the gallery in a single, consistent rhythm (one image, then a pair …). */
   let gi = 0;
   let ip = 0;
   const pattern = [1, 2];
@@ -154,17 +154,13 @@ export default function ProjectPage() {
     return <ImageRow key={`row-${ip}`} imgs={row} mobile={isMobile} />;
   };
 
-  /* Interleave text and image blocks so text never stacks up together. */
+  /* Interleave copy, photos and quotes so nothing stacks up together. */
   const blocks: ReactNode[] = [];
 
   blocks.push(
     <TextBlock key="overview" kicker={`01 — ${t.ui.overviewH}`} mobile={isMobile}>
-      <Reveal as="p" style={{ fontSize: "clamp(26px,3vw,46px)", fontWeight: 500, letterSpacing: "-.02em", lineHeight: 1.2, maxWidth: "34ch", textWrap: "balance" }}>
-        {work.tagline}
-      </Reveal>
-      <Reveal as="p" style={{ marginTop: "clamp(22px,2.8vh,34px)", fontSize: "clamp(16px,1.4vw,20px)", lineHeight: 1.62, color: "var(--muted)", maxWidth: "72ch" }}>
-        {work.summary}
-      </Reveal>
+      <Reveal as="p" style={{ ...LEAD, maxWidth: "42ch", textWrap: "balance" }}>{work.tagline}</Reveal>
+      <Reveal as="p" style={{ ...BODY, marginTop: "clamp(20px,2.6vh,30px)", maxWidth: "78ch" }}>{work.summary}</Reveal>
       <Reveal style={{ display: "flex", flexWrap: "wrap", gap: "clamp(24px,3vw,64px)", marginTop: "clamp(40px,6vh,72px)", paddingTop: "clamp(28px,4vh,40px)", borderTop: "1px solid var(--line)" }}>
         {meta.map((m) => (
           <div key={m.k} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -177,10 +173,22 @@ export default function ProjectPage() {
   );
   blocks.push(nextRow());
 
+  /* 02 — Challenge and 03 — Approach share one row, two columns. */
   blocks.push(
-    <TextBlock key="challenge" kicker={`02 — ${t.ui.challengeH}`} mobile={isMobile}>
-      <Reveal as="p" style={{ fontSize: "clamp(22px,2.4vw,38px)", fontWeight: 500, letterSpacing: "-.02em", lineHeight: 1.3, maxWidth: "40ch", textWrap: "balance" }}>{work.challenge}</Reveal>
-    </TextBlock>,
+    <section key="reto-enfoque" style={{ padding: "clamp(78px,13vh,160px) clamp(20px,6vw,110px)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "clamp(36px,5vw,96px)", alignItems: "start", maxWidth: 1500 }}>
+        <Reveal>
+          <span className="mono" style={KICKER}>02 — {t.ui.challengeH}</span>
+          <p style={{ ...LEAD, marginTop: 20, maxWidth: "34ch", textWrap: "balance" }}>{work.challenge}</p>
+        </Reveal>
+        <Reveal style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <span className="mono" style={KICKER}>03 — {t.ui.approachH}</span>
+          {work.approach.map((para, i) => (
+            <p key={i} style={i === 0 ? { ...LEAD, maxWidth: "40ch" } : { ...BODY, maxWidth: "44ch" }}>{para}</p>
+          ))}
+        </Reveal>
+      </div>
+    </section>,
   );
   blocks.push(nextRow());
 
@@ -190,12 +198,11 @@ export default function ProjectPage() {
   }
 
   blocks.push(
-    <TextBlock key="approach" kicker={`03 — ${t.ui.approachH}`} mobile={isMobile}>
-      <Reveal style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit,minmax(260px,1fr))", gap: "clamp(22px,3vw,54px)", maxWidth: "80ch" }}>
-        {work.approach.map((para, i) => (
-          <p key={i} style={{ fontSize: "clamp(16px,1.35vw,21px)", lineHeight: 1.62, color: i === 0 ? "var(--fg)" : "var(--muted)" }}>{para}</p>
-        ))}
-      </Reveal>
+    <TextBlock key="outcome" kicker={`04 — ${t.ui.outcomeH}`} mobile={isMobile}>
+      <Reveal as="p" style={{ ...LEAD, maxWidth: "44ch", textWrap: "balance" }}>{work.outcome[0]}</Reveal>
+      {work.outcome.slice(1).map((para, i) => (
+        <Reveal as="p" key={i} style={{ ...BODY, marginTop: "clamp(16px,2.2vh,26px)", maxWidth: "78ch" }}>{para}</Reveal>
+      ))}
     </TextBlock>,
   );
   blocks.push(nextRow());
@@ -204,21 +211,6 @@ export default function ProjectPage() {
     blocks.push(<PullQuote key="q1" text={q[1]} align="center" />);
     blocks.push(nextRow());
   }
-
-  blocks.push(
-    <TextBlock key="outcome" kicker={`04 — ${t.ui.outcomeH}`} mobile={isMobile}>
-      <Reveal as="p" style={{ fontSize: "clamp(26px,3.2vw,50px)", fontWeight: 600, letterSpacing: "-.025em", lineHeight: 1.16, maxWidth: "32ch", textWrap: "balance" }}>
-        {work.outcome[0]}
-      </Reveal>
-      {work.outcome.slice(1).map((para, i) => (
-        <Reveal as="p" key={i} style={{ marginTop: "clamp(18px,2.4vh,28px)", fontSize: "clamp(16px,1.3vw,20px)", lineHeight: 1.62, color: "var(--muted)", maxWidth: "72ch" }}>
-          {para}
-        </Reveal>
-      ))}
-    </TextBlock>,
-  );
-  blocks.push(nextRow());
-
   if (q[2]) {
     blocks.push(<PullQuote key="q2" text={q[2]} />);
     blocks.push(nextRow());
@@ -276,12 +268,13 @@ export default function ProjectPage() {
         </div>
       </section>
 
-      {/* ---------- INTERLEAVED TEXT + IMAGE BLOCKS ---------- */}
+      {/* ---------- INTERLEAVED COPY + PHOTOS + QUOTES (no stops) ---------- */}
       {blocks}
 
-      {/* ---------- NEXT PROJECT (inverted to the opposite theme) ---------- */}
+      {/* ---------- NEXT PROJECT (a deliberate stop, inverted to the opposite theme) ---------- */}
       <button
         onClick={() => router.push(`/work/${next.slug}`)}
+        className="snap"
         style={{ position: "relative", display: "block", width: "100%", height: "100vh", border: "none", padding: 0, cursor: "pointer", overflow: "hidden", textAlign: "center", background: "var(--ink)", color: "var(--inkfg)", fontFamily: "inherit" }}
       >
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, padding: 20 }}>
