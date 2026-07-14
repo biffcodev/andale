@@ -59,6 +59,23 @@ html[data-theme="dark"] {
 
 html {
   scroll-behavior: smooth;
+  /* Full-viewport "stops": consecutive full-screen blocks (marked .snap) settle
+     one-per-scroll onto each block. Where a shorter text section sits between two
+     blocks the gap exceeds one viewport, so the browser still lets you scroll and
+     read it freely before snapping onto the next block. */
+  scroll-snap-type: y mandatory;
+}
+
+/* A full-viewport block that scrolling settles onto. */
+.snap {
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-snap-type: none;
+  }
 }
 
 body {
@@ -67,7 +84,9 @@ body {
   font-family: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   transition: background 0.5s ease, color 0.5s ease;
-  overflow-x: hidden;
+  /* clip (not hidden) so body doesn't become a scroll container — keeps html the
+     single scroller, which the scroll-snap on <html> relies on. */
+  overflow-x: clip;
 }
 
 .mono {

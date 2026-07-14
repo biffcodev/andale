@@ -2,10 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { CasePanel } from "@/components/case-panel";
 import { Footer } from "@/components/footer";
 import { Reveal } from "@/components/reveal";
 import { useSite } from "@/components/site-context";
-import { coverBase, HERO_VIDEO, mediaAbs, WORK_IMGS, imgUrl } from "@/lib/content";
+import { coverBase, HERO_VIDEO, WORK_IMGS, imgUrl } from "@/lib/content";
 import { STRINGS } from "@/lib/i18n";
 import { getProjects, type LocalizedProject } from "@/lib/projects";
 
@@ -58,7 +59,7 @@ export default function WorkPage() {
   return (
     <main id="maincontent" role="main">
       {/* ---------- VIDEO HERO ---------- */}
-      <section style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
+      <section className="snap" style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
         <video
           ref={videoRef}
           autoPlay
@@ -89,7 +90,7 @@ export default function WorkPage() {
       </section>
 
       {/* ---------- INTRO ---------- */}
-      <section style={{ position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,15vh,180px) clamp(20px,6vw,110px) clamp(60px,10vh,120px)", overflow: "hidden" }}>
+      <section className="snap" style={{ position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,15vh,180px) clamp(20px,6vw,110px) clamp(60px,10vh,120px)", overflow: "hidden" }}>
         <Reveal as="h1" style={{ fontSize: "clamp(48px,10vw,168px)", fontWeight: 800, letterSpacing: "-.05em", lineHeight: 0.9, marginTop: "clamp(18px,2.5vh,30px)", maxWidth: "12ch", textWrap: "balance" }}>
           {t.ui.portfolioTitle}
         </Reveal>
@@ -105,35 +106,15 @@ export default function WorkPage() {
         </div>
       </section>
 
-      {/* ---------- FULLSCREEN CASE PANELS ---------- */}
+      {/* ---------- FULLSCREEN CASE PANELS (identical presentation to the home rail) ---------- */}
       {panels.map((w) => (
-        <button
+        <CasePanel
           key={w.slug}
-          onClick={() => router.push(`/work/${w.slug}`)}
-          className="casepanel"
-          style={{ position: "relative", display: "block", width: "100%", height: "100vh", border: "none", padding: 0, margin: 0, cursor: "pointer", overflow: "hidden", textAlign: "left", background: "var(--bg)" }}
-        >
-          <div className="casemedia" style={mediaAbs(w.cover)} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(0,0,0,.34) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,0) 45%,rgba(0,0,0,.74) 100%)" }} />
-          <div style={{ position: "absolute", top: "clamp(28px,5vw,64px)", left: "clamp(20px,6vw,90px)", right: "clamp(20px,6vw,90px)", display: "flex", alignItems: "center", justifyContent: "space-between", color: "#fff" }}>
-            <span className="mono" style={{ fontSize: 13, letterSpacing: ".22em", color: "rgba(255,255,255,.85)" }}>{w.sector}</span>
-            <span className="mono" style={{ fontSize: 13, letterSpacing: ".14em", color: "rgba(255,255,255,.7)" }}>
-              {w.num} <span style={{ opacity: 0.55 }}>/ {w.total}</span>
-            </span>
-          </div>
-          <div style={{ position: "absolute", left: "clamp(20px,6vw,90px)", bottom: "clamp(40px,8vh,80px)", right: "clamp(20px,6vw,90px)", color: "#fff" }}>
-            <span className="mono" style={{ fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase", color: "rgba(255,255,255,.72)" }}>
-              {w.client}{w.year ? ` — ${w.year}` : ""}
-            </span>
-            <h2 style={{ fontSize: "clamp(28px,4.2vw,58px)", fontWeight: 800, letterSpacing: "-.035em", lineHeight: 1.02, marginTop: 14, maxWidth: "20ch", textWrap: "balance" }}>{w.title}</h2>
-            <span className="pillbtn" style={{ marginTop: 26, display: "inline-flex", alignItems: "center", padding: "14px 26px", borderRadius: 999, background: "#fff", color: "#0A0A0A", fontSize: 15, fontWeight: 600 }}>
-              {t.ui.viewProject}
-              <span className="pillarrow">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-              </span>
-            </span>
-          </div>
-        </button>
+          work={w}
+          onOpen={() => router.push(`/work/${w.slug}`)}
+          className="snap"
+          style={{ position: "relative", height: "100vh", width: "100%", overflow: "hidden", background: "var(--bg)" }}
+        />
       ))}
 
       {/* ---------- MORE PROJECTS GRID ---------- */}

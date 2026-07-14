@@ -40,6 +40,7 @@ export default function ContactPage() {
   return (
     <main id="maincontent" role="main">
       <section
+        className="snap"
         style={{
           minHeight: "100vh", alignContent: "center",
           padding: "clamp(90px,14vh,160px) clamp(20px,6vw,110px) clamp(50px,7vh,80px)",
@@ -104,7 +105,7 @@ export default function ContactPage() {
       </section>
 
       {/* ---------- MAP (marketing-consent gated) ---------- */}
-      <div style={{ position: "relative", height: "100vh", overflow: "hidden", background: "var(--placeholder)" }} onMouseLeave={() => setMapActive(false)}>
+      <div className="snap" style={{ position: "relative", height: "100vh", overflow: "hidden", background: "var(--placeholder)" }} onMouseLeave={() => setMapActive(false)}>
         {mapAllowed ? (
           <>
             <iframe

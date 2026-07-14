@@ -3,11 +3,12 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { CasePanel } from "@/components/case-panel";
 import { Footer } from "@/components/footer";
 import { PillButton } from "@/components/pill-button";
 import { EASE, Reveal, RevealGroup, RevealItem } from "@/components/reveal";
 import { useSite } from "@/components/site-context";
-import { HERO_IMGS, HERO_VIDEO, imgUrl, mediaAbs } from "@/lib/content";
+import { HERO_IMGS, HERO_VIDEO, imgUrl } from "@/lib/content";
 import { STRINGS } from "@/lib/i18n";
 import { getProjects } from "@/lib/projects";
 
@@ -167,23 +168,7 @@ export default function HomePage() {
   const panelBase = { flex: "0 0 100vw", width: "100vw", height: "100%", position: "relative" as const, scrollSnapAlign: "start" as const, overflow: "hidden" };
 
   const casePanel = (w: (typeof panels)[number]) => (
-    <article key={w.slug} className="casepanel" style={panelBase}>
-      <div className="casemedia" style={mediaAbs(w.cover)} />
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(0,0,0,.42) 0%,rgba(0,0,0,0) 24%,rgba(0,0,0,0) 46%,rgba(0,0,0,.72) 100%)" }} />
-      <span style={{ position: "absolute", top: "clamp(96px,13vh,132px)", right: "clamp(20px,5vw,64px)", fontSize: "clamp(64px,9vw,150px)", fontWeight: 800, letterSpacing: "-.04em", color: "rgba(255,255,255,.16)", lineHeight: 1 }}>
-        {w.num}
-      </span>
-      <div style={{ position: "absolute", left: "clamp(20px,6vw,90px)", bottom: "clamp(96px,15vh,150px)", right: "clamp(20px,6vw,90px)", color: "#fff", maxWidth: 900 }}>
-        <span className="mono" style={{ fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase", color: "rgba(255,255,255,.72)" }}>
-          {w.client}{w.year ? ` — ${w.year}` : ` — ${w.sector}`}
-        </span>
-        <h3 style={{ fontSize: "clamp(26px,3.6vw,52px)", fontWeight: 800, letterSpacing: "-.03em", lineHeight: 1.02, marginTop: 16, maxWidth: "18ch", textWrap: "balance" }}>{w.title}</h3>
-        <span className="mono" style={{ display: "block", fontSize: 13, letterSpacing: ".06em", color: "rgba(255,255,255,.72)", marginTop: 22 }}>{w.tags}</span>
-        <PillButton inverted style={{ marginTop: 30 }} onClick={() => router.push(`/work/${w.slug}`)}>
-          {t.viewCase}
-        </PillButton>
-      </div>
-    </article>
+    <CasePanel key={w.slug} work={w} onOpen={() => router.push(`/work/${w.slug}`)} style={panelBase} />
   );
 
   const ctaPanel = (
@@ -209,7 +194,7 @@ export default function HomePage() {
   return (
     <main id="maincontent" role="main">
       {/* ---------- HERO ---------- */}
-      <section id="hero" style={{ minHeight: "100vh", position: "relative", overflow: "hidden", background: "#000" }}>
+      <section id="hero" className="snap" style={{ minHeight: "100vh", position: "relative", overflow: "hidden", background: "#000" }}>
         <video
           ref={videoRef}
           autoPlay
@@ -271,6 +256,12 @@ export default function HomePage() {
         </section>
       ) : (
         <section ref={workRef} id="work" style={{ height: `${SLIDES * 100}vh`, position: "relative" }}>
+          {/* One snap marker per step so the site-wide scroll-snap agrees with the
+              carousel's own step offsets (otherwise mandatory snap would fight the
+              programmatic step scrolls). */}
+          {Array.from({ length: SLIDES }).map((_, i) => (
+            <div key={i} aria-hidden="true" className="snap" style={{ position: "absolute", top: `${i * 100}vh`, left: 0, width: 1, height: 1, pointerEvents: "none" }} />
+          ))}
           <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", background: "#000" }}>
             <motion.div style={{ display: "flex", height: "100%", width: `${SLIDES * 100}vw`, x, willChange: "transform" }}>
               {slides}
@@ -304,6 +295,7 @@ export default function HomePage() {
       <RevealGroup>
         <section
           id="about"
+          className="snap"
           style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", background: "var(--surface)", padding: "clamp(90px,12vh,140px) clamp(20px,6vw,110px)" }}
         >
           <RevealItem>

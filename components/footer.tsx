@@ -52,6 +52,7 @@ export function Footer() {
 
   return (
     <footer
+      className="snap"
       style={{
         minHeight: isMobile ? "auto" : "100vh",
         display: "flex", flexDirection: "column", justifyContent: "flex-start",

@@ -28,7 +28,7 @@ export default function ServicesPage() {
   return (
     <main id="maincontent" role="main">
       {/* ---------- INTRO ---------- */}
-      <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,14vh,150px) clamp(20px,6vw,110px)", maxWidth: 1500 }}>
+      <section className="snap" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,14vh,150px) clamp(20px,6vw,110px)", maxWidth: 1500 }}>
         <span className="kicker">{t.ui.servicesKicker}</span>
         <h1 style={{ fontSize: "clamp(40px,6vw,100px)", fontWeight: 800, letterSpacing: "-.04em", lineHeight: 0.98, marginTop: "clamp(20px,2.6vh,30px)", maxWidth: "15ch", textWrap: "balance" }}>{t.ui.servicesIntro}</h1>
         <p style={{ marginTop: "clamp(20px,2.8vh,30px)", fontSize: "clamp(17px,1.4vw,21px)", lineHeight: 1.55, color: "var(--muted)", maxWidth: "46ch" }}>{STRINGS.servicesLead[lang]}</p>
@@ -113,7 +113,7 @@ export default function ServicesPage() {
       </section>
 
       {/* ---------- PHILOSOPHY (ink) ---------- */}
-      <section style={{ minHeight: "100vh", display: "grid", gridTemplateColumns: expCols, gap: "clamp(30px,5vw,90px)", alignItems: "center", background: "var(--ink)", color: "var(--inkfg)", padding: "clamp(96px,14vh,180px) clamp(20px,6vw,110px)" }}>
+      <section className="snap" style={{ minHeight: "100vh", display: "grid", gridTemplateColumns: expCols, gap: "clamp(30px,5vw,90px)", alignItems: "center", background: "var(--ink)", color: "var(--inkfg)", padding: "clamp(96px,14vh,180px) clamp(20px,6vw,110px)" }}>
         <div>
           <span className="mono" style={{ fontSize: 12, letterSpacing: ".26em", textTransform: "uppercase", color: "var(--inkmuted)" }}>{philo.k}</span>
           <Reveal as="h2" style={{ fontSize: "clamp(34px,4.6vw,74px)", fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, marginTop: "clamp(20px,3vh,32px)", maxWidth: "16ch", textWrap: "balance" }}>

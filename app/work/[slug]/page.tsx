@@ -17,7 +17,7 @@ function FeaturePanel({ img }: { img: string }) {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const scale = useTransform(scrollYProgress, [0, 1], [1.22, 1]);
   return (
-    <div ref={ref} style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
+    <div ref={ref} className="snap" style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
       <motion.div style={{ ...mediaAbs(img), scale: reduce ? 1 : scale }} />
     </div>
   );
@@ -115,7 +115,7 @@ export default function ProjectPage() {
   return (
     <main id="maincontent" role="main">
       {/* ---------- HERO ---------- */}
-      <section style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
+      <section className="snap" style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
         <div style={mediaAbs(work.cover)} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(0,0,0,.4) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,0) 44%,rgba(0,0,0,.8) 100%)" }} />
         <div style={{ position: "absolute", left: "clamp(20px,6vw,90px)", bottom: "clamp(84px,15vh,150px)", right: "clamp(20px,6vw,90px)", color: "#fff" }}>
@@ -167,7 +167,7 @@ export default function ProjectPage() {
 
       {/* ---------- FILM (only when a project video exists) ---------- */}
       {work.video && (
-        <div style={{ position: "relative", height: "100vh", overflow: "hidden", background: "#000" }}>
+        <div className="snap" style={{ position: "relative", height: "100vh", overflow: "hidden", background: "#000" }}>
           <video ref={videoRef} muted loop playsInline poster={imgUrl(work.cover)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}>
             <source src={work.video} type="video/mp4" />
           </video>
@@ -264,6 +264,7 @@ export default function ProjectPage() {
       {/* ---------- NEXT PROJECT ---------- */}
       <button
         onClick={() => router.push(`/work/${next.slug}`)}
+        className="snap"
         style={{ position: "relative", display: "block", width: "100%", height: "100vh", border: "none", padding: 0, cursor: "pointer", overflow: "hidden", textAlign: "center", background: "var(--bg)", fontFamily: "inherit" }}
       >
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, color: "var(--fg)", padding: 20 }}>

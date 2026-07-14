@@ -19,14 +19,14 @@ export default function StudioPage() {
   return (
     <main id="maincontent" role="main">
       {/* ---------- INTRO ---------- */}
-      <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,14vh,150px) clamp(20px,6vw,110px)", maxWidth: 1500 }}>
+      <section className="snap" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,14vh,150px) clamp(20px,6vw,110px)", maxWidth: 1500 }}>
         <span className="kicker">{labels.intro}</span>
         <h1 style={{ fontSize: "clamp(40px,6vw,100px)", fontWeight: 800, letterSpacing: "-.04em", lineHeight: 0.98, marginTop: "clamp(20px,2.6vh,30px)", maxWidth: "15ch", textWrap: "balance" }}>{t.aboutTitle}</h1>
         <p style={{ marginTop: "clamp(20px,2.8vh,30px)", fontSize: "clamp(17px,1.4vw,21px)", lineHeight: 1.55, color: "var(--muted)", maxWidth: "46ch" }}>{STRINGS.studioLead[lang]}</p>
       </section>
 
       {/* ---------- FULL-BLEED IMAGE ---------- */}
-      <div style={{ position: "relative", height: "100vh", overflow: "hidden", background: "var(--placeholder)" }}>
+      <div className="snap" style={{ position: "relative", height: "100vh", overflow: "hidden", background: "var(--placeholder)" }}>
         <div
           style={{
             position: "absolute", inset: 0,
@@ -37,7 +37,7 @@ export default function StudioPage() {
       </div>
 
       {/* ---------- MANIFESTO (ink) ---------- */}
-      <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", background: "var(--ink)", color: "var(--inkfg)", padding: "clamp(90px,14vh,180px) clamp(20px,6vw,110px)" }}>
+      <section className="snap" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", background: "var(--ink)", color: "var(--inkfg)", padding: "clamp(90px,14vh,180px) clamp(20px,6vw,110px)" }}>
         <span className="mono" style={{ fontSize: 12, letterSpacing: ".26em", textTransform: "uppercase", color: "var(--inkmuted)" }}>{labels.intro}</span>
         <Reveal as="p" style={{ marginTop: "clamp(26px,4vh,44px)", fontSize: "clamp(30px,4vw,68px)", fontWeight: 600, letterSpacing: "-.03em", lineHeight: 1.14, maxWidth: "20ch", textWrap: "balance" }}>
           {t.aboutBody}
@@ -45,7 +45,7 @@ export default function StudioPage() {
       </section>
 
       {/* ---------- VALUES ---------- */}
-      <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,14vh,160px) clamp(20px,6vw,110px)" }}>
+      <section className="snap" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,14vh,160px) clamp(20px,6vw,110px)" }}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
           <span className="kicker">{t.ui.valuesH}</span>
           <span className="mono" style={{ fontSize: 12, letterSpacing: ".16em", color: "var(--accent,var(--fg))" }}>{valuesCount}</span>
@@ -62,7 +62,7 @@ export default function StudioPage() {
       </section>
 
       {/* ---------- NUMBERS ---------- */}
-      <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", background: "var(--surface)", padding: "clamp(90px,14vh,160px) clamp(20px,6vw,110px)" }}>
+      <section className="snap" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", background: "var(--surface)", padding: "clamp(90px,14vh,160px) clamp(20px,6vw,110px)" }}>
         <span className="kicker">{STRINGS.numbersLabel[lang]}</span>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: "clamp(40px,6vw,90px)", marginTop: "clamp(44px,7vh,80px)" }}>
           {t.stats.map((st) => (
@@ -75,14 +75,14 @@ export default function StudioPage() {
       </section>
 
       {/* ---------- QUOTE ---------- */}
-      <section style={{ minHeight: "100vh", display: "grid", placeItems: "center", textAlign: "center", padding: "clamp(70px,12vh,140px) clamp(20px,6vw,110px)", background: "var(--ink)", color: "var(--inkfg)" }}>
+      <section className="snap" style={{ minHeight: "100vh", display: "grid", placeItems: "center", textAlign: "center", padding: "clamp(70px,12vh,140px) clamp(20px,6vw,110px)", background: "var(--ink)", color: "var(--inkfg)" }}>
         <blockquote style={{ fontSize: "clamp(38px,7vw,104px)", fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, maxWidth: "16ch", margin: "0 auto", textWrap: "balance" }}>
           {STRINGS.studioQuote[lang]}
         </blockquote>
       </section>
 
       {/* ---------- APPROACH ---------- */}
-      <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,14vh,160px) clamp(20px,6vw,110px)" }}>
+      <section className="snap" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,14vh,160px) clamp(20px,6vw,110px)" }}>
         <span className="kicker">{STRINGS.approachKicker[lang]}</span>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "clamp(30px,4vw,70px)", marginTop: "clamp(44px,7vh,80px)" }}>
           {approach.map((ap, i) => (
@@ -96,7 +96,7 @@ export default function StudioPage() {
       </section>
 
       {/* ---------- TEAM ---------- */}
-      <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", background: "var(--surface)", padding: "clamp(96px,14vh,160px) clamp(20px,6vw,110px)" }}>
+      <section className="snap" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", background: "var(--surface)", padding: "clamp(96px,14vh,160px) clamp(20px,6vw,110px)" }}>
         <span className="kicker">{t.ui.teamH}</span>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: "clamp(28px,3vw,52px)", marginTop: "clamp(40px,6vh,70px)" }}>
           {team.map((m, i) => {
