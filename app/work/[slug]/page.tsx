@@ -18,7 +18,7 @@ function FeaturePanel({ img }: { img: string }) {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const scale = useTransform(scrollYProgress, [0, 1], [1.22, 1]);
   return (
-    <div ref={ref} className="snap" style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
+    <div ref={ref} style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
       <motion.div style={{ ...mediaAbs(img), scale: reduce ? 1 : scale }} />
     </div>
   );
@@ -32,7 +32,6 @@ function ImageRow({ imgs, mobile }: { imgs: string[]; mobile: boolean }) {
   if (imgs.length === 1) return <FeaturePanel img={imgs[0]} />;
   return (
     <div
-      className={mobile ? undefined : "snap"}
       style={{ display: "flex", flexDirection: mobile ? "column" : "row", height: mobile ? "auto" : "100vh", width: "100%" }}
     >
       {imgs.map((src) => (
@@ -72,6 +71,19 @@ function PullQuote({ text, align = "left" }: { text: string; align?: "left" | "c
 
 const KICKER = { fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase" as const, color: "var(--accent,var(--fg))" };
 
+/* A text section laid out as label-left / content-right so the copy spans the
+   width instead of sitting in a narrow left column with empty space beside it. */
+function TextBlock({ kicker, mobile, children }: { kicker: string; mobile: boolean; children: ReactNode }) {
+  return (
+    <section style={{ padding: "clamp(78px,13vh,160px) clamp(20px,6vw,110px)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "minmax(0,180px) minmax(0,1fr)", gap: mobile ? "clamp(16px,3vh,26px)" : "clamp(36px,5vw,96px)", alignItems: "start", maxWidth: 1500 }}>
+        <span className="mono" style={{ ...KICKER, paddingTop: mobile ? 0 : 10 }}>{kicker}</span>
+        <div>{children}</div>
+      </div>
+    </section>
+  );
+}
+
 export default function ProjectPage() {
   const { t, lang } = useSite();
   const router = useRouter();
@@ -87,6 +99,18 @@ export default function ProjectPage() {
     onResize();
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  /* No scroll "stops" on a project page — the text blocks sit between full-screen
+     images, and snapping was skipping them. Scroll flows block to block instead.
+     Snapping stays on for the rest of the site. */
+  useEffect(() => {
+    const html = document.documentElement;
+    const prev = html.style.scrollSnapType;
+    html.style.scrollSnapType = "none";
+    return () => {
+      html.style.scrollSnapType = prev;
+    };
   }, []);
 
   if (!work) notFound();
@@ -134,12 +158,11 @@ export default function ProjectPage() {
   const blocks: ReactNode[] = [];
 
   blocks.push(
-    <section key="overview" style={{ padding: "clamp(70px,13vh,150px) clamp(20px,6vw,110px) clamp(56px,8vh,90px)" }}>
-      <span className="mono" style={KICKER}>01 — {t.ui.overviewH}</span>
-      <Reveal as="p" style={{ marginTop: "clamp(24px,3vh,38px)", fontSize: "clamp(24px,2.8vw,42px)", fontWeight: 500, letterSpacing: "-.02em", lineHeight: 1.24, maxWidth: "26ch", textWrap: "balance" }}>
+    <TextBlock key="overview" kicker={`01 — ${t.ui.overviewH}`} mobile={isMobile}>
+      <Reveal as="p" style={{ fontSize: "clamp(26px,3vw,46px)", fontWeight: 500, letterSpacing: "-.02em", lineHeight: 1.2, maxWidth: "34ch", textWrap: "balance" }}>
         {work.tagline}
       </Reveal>
-      <Reveal as="p" style={{ marginTop: "clamp(20px,2.6vh,30px)", fontSize: "clamp(16px,1.4vw,20px)", lineHeight: 1.6, color: "var(--muted)", maxWidth: "62ch" }}>
+      <Reveal as="p" style={{ marginTop: "clamp(22px,2.8vh,34px)", fontSize: "clamp(16px,1.4vw,20px)", lineHeight: 1.62, color: "var(--muted)", maxWidth: "72ch" }}>
         {work.summary}
       </Reveal>
       <Reveal style={{ display: "flex", flexWrap: "wrap", gap: "clamp(24px,3vw,64px)", marginTop: "clamp(40px,6vh,72px)", paddingTop: "clamp(28px,4vh,40px)", borderTop: "1px solid var(--line)" }}>
@@ -150,17 +173,14 @@ export default function ProjectPage() {
           </div>
         ))}
       </Reveal>
-    </section>,
+    </TextBlock>,
   );
   blocks.push(nextRow());
 
   blocks.push(
-    <section key="challenge" style={{ padding: "clamp(80px,14vh,170px) clamp(20px,6vw,110px)", maxWidth: 1100 }}>
-      <Reveal>
-        <span className="mono" style={KICKER}>02 — {t.ui.challengeH}</span>
-        <p style={{ marginTop: 22, fontSize: "clamp(20px,2vw,32px)", fontWeight: 500, letterSpacing: "-.02em", lineHeight: 1.34, maxWidth: "34ch", textWrap: "balance" }}>{work.challenge}</p>
-      </Reveal>
-    </section>,
+    <TextBlock key="challenge" kicker={`02 — ${t.ui.challengeH}`} mobile={isMobile}>
+      <Reveal as="p" style={{ fontSize: "clamp(22px,2.4vw,38px)", fontWeight: 500, letterSpacing: "-.02em", lineHeight: 1.3, maxWidth: "40ch", textWrap: "balance" }}>{work.challenge}</Reveal>
+    </TextBlock>,
   );
   blocks.push(nextRow());
 
@@ -170,16 +190,13 @@ export default function ProjectPage() {
   }
 
   blocks.push(
-    <section key="approach" style={{ padding: "clamp(80px,14vh,170px) clamp(20px,6vw,110px)", maxWidth: 900 }}>
-      <Reveal>
-        <span className="mono" style={KICKER}>03 — {t.ui.approachH}</span>
-        <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 18, maxWidth: "44ch" }}>
-          {work.approach.map((para, i) => (
-            <p key={i} style={{ fontSize: "clamp(16px,1.35vw,21px)", lineHeight: 1.62, color: i === 0 ? "var(--fg)" : "var(--muted)" }}>{para}</p>
-          ))}
-        </div>
+    <TextBlock key="approach" kicker={`03 — ${t.ui.approachH}`} mobile={isMobile}>
+      <Reveal style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit,minmax(260px,1fr))", gap: "clamp(22px,3vw,54px)", maxWidth: "80ch" }}>
+        {work.approach.map((para, i) => (
+          <p key={i} style={{ fontSize: "clamp(16px,1.35vw,21px)", lineHeight: 1.62, color: i === 0 ? "var(--fg)" : "var(--muted)" }}>{para}</p>
+        ))}
       </Reveal>
-    </section>,
+    </TextBlock>,
   );
   blocks.push(nextRow());
 
@@ -189,17 +206,16 @@ export default function ProjectPage() {
   }
 
   blocks.push(
-    <section key="outcome" style={{ padding: "clamp(80px,14vh,170px) clamp(20px,6vw,110px)", maxWidth: 1100 }}>
-      <span className="mono" style={KICKER}>04 — {t.ui.outcomeH}</span>
-      <Reveal as="p" style={{ marginTop: "clamp(24px,3vh,38px)", fontSize: "clamp(24px,3vw,48px)", fontWeight: 600, letterSpacing: "-.025em", lineHeight: 1.18, maxWidth: "24ch", textWrap: "balance" }}>
+    <TextBlock key="outcome" kicker={`04 — ${t.ui.outcomeH}`} mobile={isMobile}>
+      <Reveal as="p" style={{ fontSize: "clamp(26px,3.2vw,50px)", fontWeight: 600, letterSpacing: "-.025em", lineHeight: 1.16, maxWidth: "32ch", textWrap: "balance" }}>
         {work.outcome[0]}
       </Reveal>
       {work.outcome.slice(1).map((para, i) => (
-        <Reveal as="p" key={i} style={{ marginTop: "clamp(18px,2.4vh,28px)", fontSize: "clamp(16px,1.3vw,20px)", lineHeight: 1.6, color: "var(--muted)", maxWidth: "62ch" }}>
+        <Reveal as="p" key={i} style={{ marginTop: "clamp(18px,2.4vh,28px)", fontSize: "clamp(16px,1.3vw,20px)", lineHeight: 1.62, color: "var(--muted)", maxWidth: "72ch" }}>
           {para}
         </Reveal>
       ))}
-    </section>,
+    </TextBlock>,
   );
   blocks.push(nextRow());
 
@@ -218,7 +234,7 @@ export default function ProjectPage() {
   /* Film (only when a project has a video) — a full-viewport finale. */
   if (work.video) {
     blocks.push(
-      <div key="film" className="snap" style={{ position: "relative", height: "100vh", overflow: "hidden", background: "#000" }}>
+      <div key="film" style={{ position: "relative", height: "100vh", overflow: "hidden", background: "#000" }}>
         <video ref={videoRef} muted loop playsInline poster={imgUrl(work.cover)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}>
           <source src={work.video} type="video/mp4" />
         </video>
@@ -249,7 +265,7 @@ export default function ProjectPage() {
   return (
     <main id="maincontent" role="main">
       {/* ---------- HERO ---------- */}
-      <section className="snap" style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
+      <section style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
         <div style={mediaAbs(work.cover)} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(0,0,0,.4) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,0) 44%,rgba(0,0,0,.8) 100%)" }} />
         <div style={{ position: "absolute", left: "clamp(20px,6vw,90px)", bottom: "clamp(84px,15vh,150px)", right: "clamp(20px,6vw,90px)", color: "#fff" }}>
@@ -266,7 +282,6 @@ export default function ProjectPage() {
       {/* ---------- NEXT PROJECT (inverted to the opposite theme) ---------- */}
       <button
         onClick={() => router.push(`/work/${next.slug}`)}
-        className="snap"
         style={{ position: "relative", display: "block", width: "100%", height: "100vh", border: "none", padding: 0, cursor: "pointer", overflow: "hidden", textAlign: "center", background: "var(--ink)", color: "var(--inkfg)", fontFamily: "inherit" }}
       >
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, padding: 20 }}>
