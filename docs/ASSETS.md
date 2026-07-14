@@ -55,6 +55,12 @@ Orden y uso:
   no se desperdicia ninguna que subas.
 - Con una sola imagen ya se ve la portada en el listado y la home. Las que
   falten muestran placeholder rayado.
+- **Portada animada (GIF) solo para la página del proyecto:** subí un `.gif`
+  (o un archivo con `hero` en el nombre) a la carpeta del proyecto y se usa como
+  portada **únicamente en la página individual**. En la home y el archivo la
+  portada sigue siendo la imagen estática. Ej.: `casa-capo/hero.gif`.
+- **Video de colores / clip:** subí `colores.mp4` a la carpeta y aparece a mitad
+  de la página del proyecto, en loop sobre fondo blanco (ver `video` en los datos).
 
 Ejemplo real (Casa Capo, 11 imágenes): subiste `CASA_CAPO-2.webp` … `-13.webp`
 y el sitio arma portada + paneles + grilla final automáticamente.

@@ -50,6 +50,9 @@ export interface Project {
   client: string;
   year?: string;
   cover: string;
+  /** Animated cover (a .gif) used ONLY on the individual project page's hero.
+      The home rail and the archive keep the static `cover` image. */
+  coverAnimated?: string;
   gallery: string[];
   video?: string;
   content: Partial<Record<Lang, ProjectContent>>;
@@ -62,19 +65,22 @@ export interface Project {
    files it falls back to the by-convention placeholder paths, which degrade to
    the striped placeholder. `cover` is the first image; `gallery` is the rest
    (the detail page uses the first four and shows any extras in a closing grid). */
-const MANIFEST = imageManifest as Record<string, string[]>;
+const MANIFEST = imageManifest as Record<string, { images: string[]; hero?: string }>;
 
 const img = (slug: string) => {
-  const files = MANIFEST[slug] ?? [];
+  const entry = MANIFEST[slug];
+  const files = entry?.images ?? [];
+  const coverAnimated = entry?.hero;
   if (files.length === 0) {
     return {
       cover: `/uploads/projects/${slug}/cover.webp`,
       gallery: [1, 2, 3, 4].map((n) => `/uploads/projects/${slug}/${n}.webp`),
+      coverAnimated,
     };
   }
   const cover = files[0];
   const rest = files.length > 1 ? files.slice(1) : files;
-  return { cover, gallery: rest };
+  return { cover, gallery: rest, coverAnimated };
 };
 
 export const PROJECTS: Project[] = [
@@ -348,6 +354,7 @@ export interface LocalizedProject extends ProjectContent {
   client: string;
   year?: string;
   cover: string;
+  coverAnimated?: string;
   gallery: string[];
   video?: string;
   index: number;
@@ -368,6 +375,7 @@ export function getProjects(lang: Lang): LocalizedProject[] {
     client: p.client,
     year: p.year,
     cover: p.cover,
+    coverAnimated: p.coverAnimated,
     gallery: p.gallery,
     video: p.video,
     index: i,

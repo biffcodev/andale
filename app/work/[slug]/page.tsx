@@ -210,9 +210,9 @@ export default function ProjectPage() {
 
   return (
     <main id="maincontent" role="main">
-      {/* ---------- HERO ---------- */}
+      {/* ---------- HERO (animated cover on the project page when provided) ---------- */}
       <section style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
-        <div style={mediaAbs(work.cover)} />
+        <div style={mediaAbs(work.coverAnimated ?? work.cover)} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(0,0,0,.4) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,0) 44%,rgba(0,0,0,.8) 100%)" }} />
         <div style={{ position: "absolute", left: "clamp(20px,6vw,90px)", bottom: "clamp(84px,15vh,150px)", right: "clamp(20px,6vw,90px)", color: "#fff" }}>
           <span className="mono" style={{ fontSize: 13, letterSpacing: ".28em", textTransform: "uppercase", color: "rgba(255,255,255,.82)" }}>

@@ -1,15 +1,17 @@
 {
-  "casa-capo": [
-    "/uploads/projects/casa-capo/CASA_CAPO-2.webp",
-    "/uploads/projects/casa-capo/CASA_CAPO-4.webp",
-    "/uploads/projects/casa-capo/CASA_CAPO-5.webp",
-    "/uploads/projects/casa-capo/CASA_CAPO-6.webp",
-    "/uploads/projects/casa-capo/CASA_CAPO-7.webp",
-    "/uploads/projects/casa-capo/CASA_CAPO-8.webp",
-    "/uploads/projects/casa-capo/CASA_CAPO-9.webp",
-    "/uploads/projects/casa-capo/CASA_CAPO-10.webp",
-    "/uploads/projects/casa-capo/CASA_CAPO-11.webp",
-    "/uploads/projects/casa-capo/CASA_CAPO-12.webp",
-    "/uploads/projects/casa-capo/CASA_CAPO-13.webp"
-  ]
+  "casa-capo": {
+    "images": [
+      "/uploads/projects/casa-capo/CASA_CAPO-2.webp",
+      "/uploads/projects/casa-capo/CASA_CAPO-4.webp",
+      "/uploads/projects/casa-capo/CASA_CAPO-5.webp",
+      "/uploads/projects/casa-capo/CASA_CAPO-6.webp",
+      "/uploads/projects/casa-capo/CASA_CAPO-7.webp",
+      "/uploads/projects/casa-capo/CASA_CAPO-8.webp",
+      "/uploads/projects/casa-capo/CASA_CAPO-9.webp",
+      "/uploads/projects/casa-capo/CASA_CAPO-10.webp",
+      "/uploads/projects/casa-capo/CASA_CAPO-11.webp",
+      "/uploads/projects/casa-capo/CASA_CAPO-12.webp",
+      "/uploads/projects/casa-capo/CASA_CAPO-13.webp"
+    ]
+  }
 }
