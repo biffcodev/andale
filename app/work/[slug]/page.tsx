@@ -10,9 +10,11 @@ import { mediaAbs, pickSrc } from "@/lib/content";
 import { getProject, getProjects } from "@/lib/projects";
 
 const KICKER: CSSProperties = { fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--accent,var(--fg))" };
-/* One shared, moderate type size for every section's copy (01–04) — bold for the
-   statement, regular/muted for supporting lines. Only the quotes go large. */
-const LEAD: CSSProperties = { fontSize: "clamp(19px,1.7vw,26px)", fontWeight: 600, letterSpacing: "-.015em", lineHeight: 1.34 };
+/* One shared, moderate type size for every section's copy (01–04). The tagline
+   is the bold statement (LEAD); the section paragraphs read as clean prose
+   (PROSE); supporting lines are muted (BODY). Only the quotes go large. */
+const LEAD: CSSProperties = { fontSize: "clamp(18px,1.55vw,24px)", fontWeight: 600, letterSpacing: "-.015em", lineHeight: 1.34 };
+const PROSE: CSSProperties = { fontSize: "clamp(17px,1.4vw,22px)", fontWeight: 400, letterSpacing: "-.005em", lineHeight: 1.52 };
 const BODY: CSSProperties = { fontSize: "clamp(16px,1.35vw,19px)", fontWeight: 400, lineHeight: 1.62, color: "var(--muted)" };
 
 /* Single full-bleed image, full viewport, that settles from 1.22→1 while scrolled
@@ -161,12 +163,12 @@ export default function ProjectPage() {
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "clamp(36px,5vw,96px)", alignItems: "start", maxWidth: 1500 }}>
         <Reveal>
           <span className="mono" style={KICKER}>02 — {t.ui.challengeH}</span>
-          <p style={{ ...LEAD, marginTop: 20, maxWidth: "34ch", textWrap: "balance" }}>{work.challenge}</p>
+          <p style={{ ...PROSE, marginTop: 20, maxWidth: "46ch" }}>{work.challenge}</p>
         </Reveal>
         <Reveal style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <span className="mono" style={KICKER}>03 — {t.ui.approachH}</span>
           {work.approach.map((para, i) => (
-            <p key={i} style={i === 0 ? { ...LEAD, maxWidth: "40ch" } : { ...BODY, maxWidth: "44ch" }}>{para}</p>
+            <p key={i} style={{ ...PROSE, maxWidth: "48ch" }}>{para}</p>
           ))}
         </Reveal>
       </div>
@@ -184,7 +186,7 @@ export default function ProjectPage() {
 
   blocks.push(
     <TextBlock key="outcome" kicker={`04 — ${t.ui.outcomeH}`} mobile={isMobile}>
-      <Reveal as="p" style={{ ...LEAD, maxWidth: "44ch", textWrap: "balance" }}>{work.outcome[0]}</Reveal>
+      <Reveal as="p" style={{ ...PROSE, maxWidth: "62ch" }}>{work.outcome[0]}</Reveal>
       {work.outcome.slice(1).map((para, i) => (
         <Reveal as="p" key={i} style={{ ...BODY, marginTop: "clamp(16px,2.2vh,26px)", maxWidth: "78ch" }}>{para}</Reveal>
       ))}
