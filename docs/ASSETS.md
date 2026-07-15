@@ -61,6 +61,13 @@ Orden y uso:
   portada sigue siendo la imagen estática. Ej.: `casa-capo/hero.gif`.
 - **Video de colores / clip:** subí `colores.mp4` a la carpeta y aparece a mitad
   de la página del proyecto, en loop sobre fondo blanco (ver `video` en los datos).
+- **Versión mobile (9:16) diferenciada:** para cualquier archivo `nombre.ext`,
+  subí además `nombre-mobile.ext` con el recorte vertical (9:16). En celular se
+  carga esa versión; en desktop la normal (16:9). Vale para imágenes, portada,
+  hero animado y videos. Ej.: `CASA_CAPO-2.webp` + `CASA_CAPO-2-mobile.webp`,
+  `casacapo-hero.webp` + `casacapo-hero-mobile.webp`, `colores.mp4` +
+  `colores-mobile.mp4`. **Si un archivo no tiene `-mobile`, se ve igual en ambos**
+  (ideal para imágenes cuadradas).
 
 Ejemplo real (Casa Capo, 11 imágenes): subiste `CASA_CAPO-2.webp` … `-13.webp`
 y el sitio arma portada + paneles + grilla final automáticamente.

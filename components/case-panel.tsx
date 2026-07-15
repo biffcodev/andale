@@ -1,9 +1,10 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { mediaAbs } from "@/lib/content";
+import { mediaAbs, pickSrc } from "@/lib/content";
 import type { LocalizedProject } from "@/lib/projects";
 import { PillButton } from "./pill-button";
+import { useIsMobile } from "./use-is-mobile";
 import { useSite } from "./site-context";
 
 /* One full-viewport "featured project" panel. Used identically on the home rail
@@ -20,9 +21,10 @@ export function CasePanel({
   className?: string;
 }) {
   const { t } = useSite();
+  const isMobile = useIsMobile();
   return (
     <article className={`casepanel${className ? " " + className : ""}`} style={style}>
-      <div className="casemedia" style={mediaAbs(work.cover)} />
+      <div className="casemedia" style={mediaAbs(pickSrc(work.cover, isMobile, work.mobileMap))} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(0,0,0,.42) 0%,rgba(0,0,0,0) 24%,rgba(0,0,0,0) 46%,rgba(0,0,0,.72) 100%)" }} />
       <span style={{ position: "absolute", top: "clamp(96px,13vh,132px)", right: "clamp(20px,5vw,64px)", fontSize: "clamp(64px,9vw,150px)", fontWeight: 800, letterSpacing: "-.04em", color: "rgba(255,255,255,.16)", lineHeight: 1, pointerEvents: "none" }}>
         {work.num}

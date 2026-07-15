@@ -6,7 +6,7 @@ import { CasePanel } from "@/components/case-panel";
 import { Footer } from "@/components/footer";
 import { Reveal } from "@/components/reveal";
 import { useSite } from "@/components/site-context";
-import { coverBase, HERO_VIDEO, WORK_IMGS, imgUrl } from "@/lib/content";
+import { coverBase, HERO_VIDEO, WORK_IMGS, imgUrl, pickSrc } from "@/lib/content";
 import { STRINGS } from "@/lib/i18n";
 import { getProjects, type LocalizedProject } from "@/lib/projects";
 
@@ -130,7 +130,7 @@ export default function WorkPage() {
                   style={{ flex: isMobile ? "1 1 100%" : "1 1 0", minWidth: 0, textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer", transition: "transform .5s cubic-bezier(.22,1,.36,1)", fontFamily: "inherit", color: "var(--fg)" }}
                 >
                   <div style={{ position: "relative", overflow: "hidden", borderRadius: 14, aspectRatio: row.ar }}>
-                    <div className="casemedia" style={{ position: "absolute", inset: 0, transition: "transform .8s ease", ...coverBase(w.cover) }} />
+                    <div className="casemedia" style={{ position: "absolute", inset: 0, transition: "transform .8s ease", ...coverBase(pickSrc(w.cover, isMobile, w.mobileMap)) }} />
                   </div>
                   <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 14, marginTop: 16 }}>
                     <span className="mono" style={{ fontSize: 11, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--muted)" }}>

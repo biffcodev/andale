@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import { Footer } from "@/components/footer";
 import { Reveal } from "@/components/reveal";
 import { useSite } from "@/components/site-context";
-import { mediaAbs } from "@/lib/content";
+import { mediaAbs, pickSrc } from "@/lib/content";
 import { getProject, getProjects } from "@/lib/projects";
 
 const KICKER: CSSProperties = { fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--accent,var(--fg))" };
@@ -33,13 +33,13 @@ function FeaturePanel({ img }: { img: string }) {
    a single image, two in a line, or three, edge-to-edge with no rounded corners.
    A single fills the viewport (FeaturePanel); a pair/trio splits it. On phones a
    row stacks and scrolls normally instead of squeezing the images into columns. */
-function ImageRow({ imgs, mobile }: { imgs: string[]; mobile: boolean }) {
-  if (imgs.length === 1) return <FeaturePanel img={imgs[0]} />;
+function ImageRow({ imgs, mobile, map }: { imgs: string[]; mobile: boolean; map?: Record<string, string> }) {
+  if (imgs.length === 1) return <FeaturePanel img={pickSrc(imgs[0], mobile, map)} />;
   return (
     <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", height: mobile ? "auto" : "100vh", width: "100%" }}>
       {imgs.map((src) => (
-        <div key={src} className="casepanel" style={{ position: "relative", flex: mobile ? "none" : "1 1 0", minWidth: 0, height: mobile ? "64vh" : "100%", overflow: "hidden" }}>
-          <div className="casemedia" style={mediaAbs(src)} />
+        <div key={src} className="casepanel" style={{ position: "relative", flex: mobile ? "none" : "1 1 0", minWidth: 0, height: mobile ? "72vh" : "100%", overflow: "hidden" }}>
+          <div className="casemedia" style={mediaAbs(pickSrc(src, mobile, map))} />
         </div>
       ))}
     </div>
@@ -133,7 +133,7 @@ export default function ProjectPage() {
     const row = g.slice(gi, gi + n);
     gi += n;
     ip += 1;
-    return <ImageRow key={`row-${ip}`} imgs={row} mobile={isMobile} />;
+    return <ImageRow key={`row-${ip}`} imgs={row} mobile={isMobile} map={work.mobileMap} />;
   };
 
   /* Interleave copy, photos and quotes so nothing stacks up together. */
@@ -180,7 +180,7 @@ export default function ProjectPage() {
   }
 
   /* Colour/motion clip — a mid-page moment (not the opening, not the very end). */
-  if (work.video) blocks.push(<ColorVideo key="colorvideo" src={work.video} />);
+  if (work.video) blocks.push(<ColorVideo key="colorvideo" src={pickSrc(work.video, isMobile, work.mobileMap)} />);
 
   blocks.push(
     <TextBlock key="outcome" kicker={`04 — ${t.ui.outcomeH}`} mobile={isMobile}>
@@ -212,7 +212,7 @@ export default function ProjectPage() {
     <main id="maincontent" role="main">
       {/* ---------- HERO (animated cover on the project page when provided) ---------- */}
       <section style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
-        <div style={mediaAbs(work.coverAnimated ?? work.cover)} />
+        <div style={mediaAbs(pickSrc(work.coverAnimated ?? work.cover, isMobile, work.mobileMap))} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(0,0,0,.4) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,0) 44%,rgba(0,0,0,.8) 100%)" }} />
         <div style={{ position: "absolute", left: "clamp(20px,6vw,90px)", bottom: "clamp(84px,15vh,150px)", right: "clamp(20px,6vw,90px)", color: "#fff" }}>
           <span className="mono" style={{ fontSize: 13, letterSpacing: ".28em", textTransform: "uppercase", color: "rgba(255,255,255,.82)" }}>

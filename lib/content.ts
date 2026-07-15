@@ -52,6 +52,13 @@ export function imgUrl(url: string): string {
   return url.startsWith("http") ? url + IMG_PARAMS : url;
 }
 
+/* Responsive media: on phones, swap in the `-mobile` (9:16) variant of an asset
+   when one exists (see the manifest `mobile` map). Assets without a variant —
+   e.g. square art — return unchanged, so they look the same on both devices. */
+export function pickSrc(url: string, isMobile: boolean, map?: Record<string, string>): string {
+  return (isMobile && map && map[url]) || url;
+}
+
 /* The design's coverBase(): image over a striped placeholder that shows through while
    (or if) the photo is missing — keep it verbatim for graceful degradation */
 export function coverBase(url: string | null): CSSProperties {

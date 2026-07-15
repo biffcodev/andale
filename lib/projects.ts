@@ -55,6 +55,8 @@ export interface Project {
   coverAnimated?: string;
   gallery: string[];
   video?: string;
+  /** Desktop URL → mobile (9:16) URL, for any asset with a `-mobile` variant. */
+  mobileMap?: Record<string, string>;
   content: Partial<Record<Lang, ProjectContent>>;
 }
 
@@ -65,22 +67,26 @@ export interface Project {
    files it falls back to the by-convention placeholder paths, which degrade to
    the striped placeholder. `cover` is the first image; `gallery` is the rest
    (the detail page uses the first four and shows any extras in a closing grid). */
-const MANIFEST = imageManifest as Record<string, { images: string[]; hero?: string }>;
+const MANIFEST = imageManifest as Record<string, { images: string[]; hero?: string; video?: string; mobile?: Record<string, string> }>;
 
 const img = (slug: string) => {
   const entry = MANIFEST[slug];
   const files = entry?.images ?? [];
   const coverAnimated = entry?.hero;
+  const video = entry?.video;
+  const mobileMap = entry?.mobile;
   if (files.length === 0) {
     return {
       cover: `/uploads/projects/${slug}/cover.webp`,
       gallery: [1, 2, 3, 4].map((n) => `/uploads/projects/${slug}/${n}.webp`),
       coverAnimated,
+      video,
+      mobileMap,
     };
   }
   const cover = files[0];
   const rest = files.length > 1 ? files.slice(1) : files;
-  return { cover, gallery: rest, coverAnimated };
+  return { cover, gallery: rest, coverAnimated, video, mobileMap };
 };
 
 export const PROJECTS: Project[] = [
@@ -120,7 +126,6 @@ export const PROJECTS: Project[] = [
     slug: "casa-capo",
     client: "Casa Capo",
     ...img("casa-capo"),
-    video: "/uploads/projects/casa-capo/colores.mp4",
     content: {
       ES: {
         title: "Una nueva categoría gastronómica",
@@ -357,6 +362,7 @@ export interface LocalizedProject extends ProjectContent {
   coverAnimated?: string;
   gallery: string[];
   video?: string;
+  mobileMap?: Record<string, string>;
   index: number;
   num: string;
   total: string;
@@ -378,6 +384,7 @@ export function getProjects(lang: Lang): LocalizedProject[] {
     coverAnimated: p.coverAnimated,
     gallery: p.gallery,
     video: p.video,
+    mobileMap: p.mobileMap,
     index: i,
     num: (i < 9 ? "0" : "") + (i + 1),
     total,

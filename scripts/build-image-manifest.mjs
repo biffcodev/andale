@@ -1,21 +1,21 @@
 #!/usr/bin/env node
 /* Build lib/projects.images.json by scanning public/uploads/projects/<slug>/.
 
-   The site wires whatever image files are present in each project folder, so
-   you can upload files to GitHub with their original names (CASA_CAPO-2.webp,
-   etc.) and they are picked up automatically — no renaming required.
+   The site wires whatever files are present in each project folder, so you can
+   upload them to GitHub with their original names and they are picked up
+   automatically — no renaming required.
 
    Rules per folder:
-     - Only .webp/.png/.jpg/.jpeg are considered as images (README/.gitkeep ignored).
-     - A file whose name contains "cover" (e.g. cover.webp or CASA_CAPO-COVER.webp)
-       becomes the cover (first image); otherwise the first file in natural order
-       is the cover.
-     - The remaining files, in natural (numeric-aware) order, are the gallery.
-     - An ANIMATED hero cover (a .gif, or a file named "hero") is picked up
-       separately as `hero`. It is used only on the individual project page's hero;
-       the cover shown on the home rail and the archive stays the static image.
+     - Images (.webp/.png/.jpg/.jpeg): the cover is a file whose name contains
+       "cover" (else the first in natural order); the rest are the gallery.
+     - Animated hero cover: a .gif, or a file named "hero". Used only on the
+       individual project page's hero; the home/archive keep the static cover.
+     - Project clip: an .mp4/.webm (e.g. colores.mp4). Shown mid-page.
+     - RESPONSIVE variants: for any file `name.ext`, an optional `name-mobile.ext`
+       is served on phones (portrait 9:16). Files without a `-mobile` sibling look
+       the same on both devices. The `mobile` map pairs desktop URL → mobile URL.
 
-   Output per slug: { images: string[], hero?: string }.
+   Output per slug: { images: string[], hero?, video?, mobile?: { [desktopUrl]: mobileUrl } }.
 
    Runs automatically before build/dev via the prebuild/predev npm hooks, and
    can be run on demand: node scripts/build-image-manifest.mjs                   */
@@ -25,8 +25,10 @@ import { join } from "node:path";
 const ROOT = "public/uploads/projects";
 const OUT = "lib/projects.images.json";
 const IMG = /\.(webp|png|jpe?g)$/i;
+const VID = /\.(mp4|webm)$/i;
 const HERO_NAME = /(^|[-_ ])hero([-_. ]|$)/i;
 const HERO_EXT = /\.(gif|webp|png|jpe?g|mp4|webm)$/i;
+const MOBILE = /-mobile(\.[a-z0-9]+)$/i; // "…-mobile.ext"
 
 /* natural sort so CASA_CAPO-10 comes after CASA_CAPO-9 */
 const natural = (a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" });
@@ -41,24 +43,41 @@ try {
 
 for (const slug of slugs.sort()) {
   const all = await readdir(join(ROOT, slug));
-  /* animated hero: a "hero"-named file first, else any .gif */
-  const heroFile = all.find((f) => HERO_NAME.test(f) && HERO_EXT.test(f)) || all.find((f) => /\.gif$/i.test(f));
-  const files = all.filter((f) => IMG.test(f) && f !== heroFile);
-  if (files.length === 0 && !heroFile) continue;
+  const url = (f) => `/uploads/projects/${slug}/${f}`;
+  const desktop = all.filter((f) => !MOBILE.test(f));
+  const mobileFiles = all.filter((f) => MOBILE.test(f));
+  const mobileOf = (f) => {
+    const target = f.replace(/(\.[a-z0-9]+)$/i, "-mobile$1").toLowerCase();
+    return mobileFiles.find((m) => m.toLowerCase() === target);
+  };
+
+  /* animated hero (desktop): a "hero"-named file, else any .gif */
+  const heroFile = desktop.find((f) => HERO_NAME.test(f) && HERO_EXT.test(f)) || desktop.find((f) => /\.gif$/i.test(f));
+  /* project clip */
+  const videoFile = desktop.find((f) => VID.test(f));
+
+  let files = desktop.filter((f) => IMG.test(f) && f !== heroFile);
+  if (files.length === 0 && !heroFile && !videoFile) continue;
   const coverIdx = files.findIndex((f) => /cover/i.test(f.replace(IMG, "")));
-  let ordered;
-  if (coverIdx >= 0) {
-    const cover = files[coverIdx];
-    ordered = [cover, ...files.filter((_, i) => i !== coverIdx).sort(natural)];
-  } else {
-    ordered = [...files].sort(natural);
+  const ordered = coverIdx >= 0 ? [files[coverIdx], ...files.filter((_, i) => i !== coverIdx).sort(natural)] : [...files].sort(natural);
+
+  const mobile = {};
+  for (const f of [...ordered, heroFile, videoFile].filter(Boolean)) {
+    const m = mobileOf(f);
+    if (m) mobile[url(f)] = url(m);
   }
-  const entry = { images: ordered.map((f) => `/uploads/projects/${slug}/${f}`) };
-  if (heroFile) entry.hero = `/uploads/projects/${slug}/${heroFile}`;
+
+  const entry = { images: ordered.map(url) };
+  if (heroFile) entry.hero = url(heroFile);
+  if (videoFile) entry.video = url(videoFile);
+  if (Object.keys(mobile).length) entry.mobile = mobile;
   manifest[slug] = entry;
 }
 
 await writeFile(OUT, JSON.stringify(manifest, null, 2) + "\n");
 const n = Object.keys(manifest).length;
 console.log(`Wrote ${OUT} — ${n} project(s) with media:`);
-for (const [slug, e] of Object.entries(manifest)) console.log(`  ${slug}: ${e.images.length} image(s)${e.hero ? " + animated hero" : ""}`);
+for (const [slug, e] of Object.entries(manifest)) {
+  const tags = [`${e.images.length} image(s)`, e.hero && "hero", e.video && "clip", e.mobile && `${Object.keys(e.mobile).length} mobile variant(s)`].filter(Boolean);
+  console.log(`  ${slug}: ${tags.join(" + ")}`);
+}
