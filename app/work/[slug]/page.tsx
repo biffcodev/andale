@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import { Footer } from "@/components/footer";
 import { Reveal } from "@/components/reveal";
 import { useSite } from "@/components/site-context";
-import { mediaAbs, pickSrc } from "@/lib/content";
+import { coverBase, mediaAbs, pickSrc } from "@/lib/content";
 import { getProject, getProjects } from "@/lib/projects";
 
 const KICKER: CSSProperties = { fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--accent,var(--fg))" };
@@ -138,6 +138,15 @@ export default function ProjectPage() {
     return <ImageRow key={`row-${ip}`} imgs={row} mobile={isMobile} map={work.mobileMap} />;
   };
 
+  /* A striped stand-in shown where a real image will go, so copy and quotes stay
+     interleaved with media even before the photos are uploaded. */
+  let phCount = 0;
+  const placeholder = (): ReactNode => (
+    <div key={`ph-${phCount++}`} className="casepanel" style={{ height: isMobile ? "72vh" : "100vh", width: "100%", ...coverBase(null) }} />
+  );
+  /* Every interleave slot yields media: the next real image, or a placeholder. */
+  const mediaSlot = (): ReactNode => nextRow() ?? placeholder();
+
   /* Interleave copy, photos and quotes so nothing stacks up together. */
   const blocks: ReactNode[] = [];
 
@@ -155,7 +164,7 @@ export default function ProjectPage() {
       </Reveal>
     </TextBlock>,
   );
-  blocks.push(nextRow());
+  blocks.push(mediaSlot());
 
   /* 02 — Challenge and 03 — Approach share one row, two columns. */
   blocks.push(
@@ -174,11 +183,11 @@ export default function ProjectPage() {
       </div>
     </section>,
   );
-  blocks.push(nextRow());
+  blocks.push(mediaSlot());
 
   if (q[0]) {
     blocks.push(<PullQuote key="q0" text={q[0]} />);
-    blocks.push(nextRow());
+    blocks.push(mediaSlot());
   }
 
   /* Colour/motion clip — a mid-page moment (not the opening, not the very end). */
@@ -192,19 +201,19 @@ export default function ProjectPage() {
       ))}
     </TextBlock>,
   );
-  blocks.push(nextRow());
+  blocks.push(mediaSlot());
 
   if (q[1]) {
     blocks.push(<PullQuote key="q1" text={q[1]} />);
-    blocks.push(nextRow());
+    blocks.push(mediaSlot());
   }
   if (q[2]) {
     blocks.push(<PullQuote key="q2" text={q[2]} />);
-    blocks.push(nextRow());
+    blocks.push(mediaSlot());
   }
   q.slice(3).forEach((quote, i) => {
     blocks.push(<PullQuote key={`qx-${i}`} text={quote} />);
-    blocks.push(nextRow());
+    blocks.push(mediaSlot());
   });
 
   /* Any images left over close out the gallery in the same rhythm. */
