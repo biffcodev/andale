@@ -59,6 +59,10 @@ Orden y uso:
   (o un archivo con `hero` en el nombre) a la carpeta del proyecto y se usa como
   portada **únicamente en la página individual**. En la home y el archivo la
   portada sigue siendo la imagen estática. Ej.: `casa-capo/hero.gif`.
+- **Portada en video (home + archivo):** subí un `.mp4`/`.webm` con `cover` en el
+  nombre y se usa como portada en la home y el archivo (las tarjetas), en loop y
+  sin sonido. **No** afecta el hero de la página individual. Ej.:
+  `casa-capo/casacapo-cover.mp4`.
 - **Video de colores / clip:** subí `colores.mp4` a la carpeta y aparece a mitad
   de la página del proyecto, en loop sobre fondo blanco (ver `video` en los datos).
 - **Versión mobile (9:16) diferenciada:** para cualquier archivo `nombre.ext`,

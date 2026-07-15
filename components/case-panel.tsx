@@ -24,7 +24,19 @@ export function CasePanel({
   const isMobile = useIsMobile();
   return (
     <article className={`casepanel${className ? " " + className : ""}`} style={style}>
-      <div className="casemedia" style={mediaAbs(pickSrc(work.cover, isMobile, work.mobileMap))} />
+      {work.coverVideo ? (
+        <video
+          className="casemedia"
+          autoPlay
+          muted
+          loop
+          playsInline
+          src={pickSrc(work.coverVideo, isMobile, work.mobileMap)}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", background: "var(--placeholder)" }}
+        />
+      ) : (
+        <div className="casemedia" style={mediaAbs(pickSrc(work.cover, isMobile, work.mobileMap))} />
+      )}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(0,0,0,.42) 0%,rgba(0,0,0,0) 24%,rgba(0,0,0,0) 46%,rgba(0,0,0,.72) 100%)" }} />
       <span style={{ position: "absolute", top: "clamp(96px,13vh,132px)", right: "clamp(20px,5vw,64px)", fontSize: "clamp(64px,9vw,150px)", fontWeight: 800, letterSpacing: "-.04em", color: "rgba(255,255,255,.16)", lineHeight: 1, pointerEvents: "none" }}>
         {work.num}

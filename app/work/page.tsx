@@ -130,7 +130,11 @@ export default function WorkPage() {
                   style={{ flex: isMobile ? "1 1 100%" : "1 1 0", minWidth: 0, textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer", transition: "transform .5s cubic-bezier(.22,1,.36,1)", fontFamily: "inherit", color: "var(--fg)" }}
                 >
                   <div style={{ position: "relative", overflow: "hidden", borderRadius: 14, aspectRatio: row.ar }}>
-                    <div className="casemedia" style={{ position: "absolute", inset: 0, transition: "transform .8s ease", ...coverBase(pickSrc(w.cover, isMobile, w.mobileMap)) }} />
+                    {w.coverVideo ? (
+                      <video className="casemedia" autoPlay muted loop playsInline src={pickSrc(w.coverVideo, isMobile, w.mobileMap)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", background: "var(--placeholder)" }} />
+                    ) : (
+                      <div className="casemedia" style={{ position: "absolute", inset: 0, transition: "transform .8s ease", ...coverBase(pickSrc(w.cover, isMobile, w.mobileMap)) }} />
+                    )}
                   </div>
                   <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 14, marginTop: 16 }}>
                     <span className="mono" style={{ fontSize: 11, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--muted)" }}>
