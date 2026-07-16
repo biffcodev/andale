@@ -9,12 +9,13 @@ import { coverBase, mediaAbs, pickSrc } from "@/lib/content";
 import { getProject, getProjects } from "@/lib/projects";
 
 const KICKER: CSSProperties = { fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--accent,var(--fg))" };
-/* One shared, moderate type size for every section's copy (01–04). The tagline
-   is the bold statement (LEAD); the section paragraphs read as clean prose
-   (PROSE); supporting lines are muted (BODY). Only the quotes go large. */
-const LEAD: CSSProperties = { fontSize: "clamp(18px,1.55vw,24px)", fontWeight: 600, letterSpacing: "-.015em", lineHeight: 1.34 };
-const PROSE: CSSProperties = { fontSize: "clamp(17px,1.4vw,22px)", fontWeight: 400, letterSpacing: "-.005em", lineHeight: 1.52 };
-const BODY: CSSProperties = { fontSize: "clamp(16px,1.35vw,19px)", fontWeight: 400, lineHeight: 1.62, color: "var(--muted)" };
+/* Uniform body copy for every section (01–04): one colour (ink) and one size for
+   all paragraph text — a touch smaller than before. Each section leads with its
+   first sentence in bold (LEAD) and continues in regular (PROSE); same colour,
+   same size, distinguished only by weight, exactly like the overview. Only the
+   titles and the pull quotes go large. */
+const LEAD: CSSProperties = { fontSize: "clamp(16px,1.25vw,20px)", fontWeight: 700, letterSpacing: "-.01em", lineHeight: 1.4, color: "var(--fg)" };
+const PROSE: CSSProperties = { fontSize: "clamp(16px,1.25vw,20px)", fontWeight: 400, letterSpacing: "-.005em", lineHeight: 1.58, color: "var(--fg)" };
 
 /* One gallery row, shown COMPLETE (never cropped):
    - a single (landscape/square) image runs full-bleed width at its natural height,
@@ -51,6 +52,30 @@ function ImageRow({ imgs, mobile, map, pairAr }: { imgs: string[]; mobile: boole
         </div>
       ))}
     </div>
+  );
+}
+
+/* Split the first sentence off a paragraph so a section can lead in bold and
+   continue in regular, like the overview's tagline + summary. */
+function splitLead(text: string): [string, string] {
+  const m = text.match(/^\s*([\s\S]+?[.!?])(\s+)([\s\S]+)$/);
+  return m ? [m[1].trim(), m[3].trim()] : [text.trim(), ""];
+}
+
+/* Section copy in the overview's voice: the first sentence leads in bold, the
+   remainder (and any further paragraphs) follow in regular — uniform size/colour. */
+function LeadCopy({ text, max }: { text: string | string[]; max: string }) {
+  const paras = (Array.isArray(text) ? text : [text]).filter(Boolean);
+  if (!paras.length) return null;
+  const [lead, rest] = splitLead(paras[0]);
+  const tail = [rest, ...paras.slice(1)].filter(Boolean);
+  return (
+    <>
+      <Reveal as="p" style={{ ...LEAD, maxWidth: max, textWrap: "balance" }}>{lead}</Reveal>
+      {tail.map((p, i) => (
+        <Reveal as="p" key={i} style={{ ...PROSE, marginTop: "clamp(12px,1.8vh,20px)", maxWidth: max }}>{p}</Reveal>
+      ))}
+    </>
   );
 }
 
@@ -165,8 +190,8 @@ export default function ProjectPage() {
 
   blocks.push(
     <TextBlock key="overview" kicker={`01 — ${t.ui.overviewH}`} mobile={isMobile}>
-      <Reveal as="p" style={{ ...LEAD, maxWidth: "42ch", textWrap: "balance" }}>{work.tagline}</Reveal>
-      <Reveal as="p" style={{ ...BODY, marginTop: "clamp(20px,2.6vh,30px)", maxWidth: "78ch" }}>{work.summary}</Reveal>
+      <Reveal as="p" style={{ ...LEAD, maxWidth: "48ch", textWrap: "balance" }}>{work.tagline}</Reveal>
+      <Reveal as="p" style={{ ...PROSE, marginTop: "clamp(14px,2vh,22px)", maxWidth: "70ch" }}>{work.summary}</Reveal>
       <Reveal style={{ display: "flex", flexWrap: "wrap", gap: "clamp(24px,3vw,64px)", marginTop: "clamp(40px,6vh,72px)", paddingTop: "clamp(28px,4vh,40px)", borderTop: "1px solid var(--line)" }}>
         {meta.map((m) => (
           <div key={m.k} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -186,16 +211,14 @@ export default function ProjectPage() {
   blocks.push(
     <section key="reto-enfoque" style={{ padding: "clamp(78px,13vh,160px) clamp(20px,6vw,110px)" }}>
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "clamp(36px,5vw,96px)", alignItems: "start", maxWidth: 1500 }}>
-        <Reveal>
+        <div>
           <span className="mono" style={KICKER}>02 — {t.ui.challengeH}</span>
-          <p style={{ ...PROSE, marginTop: 20, maxWidth: "46ch" }}>{work.challenge}</p>
-        </Reveal>
-        <Reveal style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ marginTop: 20 }}><LeadCopy text={work.challenge} max="46ch" /></div>
+        </div>
+        <div>
           <span className="mono" style={KICKER}>03 — {t.ui.approachH}</span>
-          {work.approach.map((para, i) => (
-            <p key={i} style={{ ...PROSE, maxWidth: "48ch" }}>{para}</p>
-          ))}
-        </Reveal>
+          <div style={{ marginTop: 20 }}><LeadCopy text={work.approach} max="48ch" /></div>
+        </div>
       </div>
     </section>,
   );
@@ -211,10 +234,7 @@ export default function ProjectPage() {
 
   blocks.push(
     <TextBlock key="outcome" kicker={`04 — ${t.ui.outcomeH}`} mobile={isMobile}>
-      <Reveal as="p" style={{ ...PROSE, maxWidth: "62ch" }}>{work.outcome[0]}</Reveal>
-      {work.outcome.slice(1).map((para, i) => (
-        <Reveal as="p" key={i} style={{ ...BODY, marginTop: "clamp(16px,2.2vh,26px)", maxWidth: "78ch" }}>{para}</Reveal>
-      ))}
+      <LeadCopy text={work.outcome} max="62ch" />
     </TextBlock>,
   );
   blocks.push(slot());

@@ -22,7 +22,7 @@ export default function StudioPage() {
       <section className="snap" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,14vh,150px) clamp(20px,6vw,110px)", maxWidth: 1500 }}>
         <span className="kicker">{labels.intro}</span>
         <h1 style={{ fontSize: "clamp(40px,6vw,100px)", fontWeight: 800, letterSpacing: "-.04em", lineHeight: 0.98, marginTop: "clamp(20px,2.6vh,30px)", maxWidth: "15ch", textWrap: "balance" }}>{t.aboutTitle}</h1>
-        <p style={{ marginTop: "clamp(20px,2.8vh,30px)", fontSize: "clamp(17px,1.4vw,21px)", lineHeight: 1.55, color: "var(--muted)", maxWidth: "46ch" }}>{STRINGS.studioLead[lang]}</p>
+        <p style={{ marginTop: "clamp(20px,2.8vh,30px)", fontSize: "clamp(16px,1.25vw,20px)", lineHeight: 1.58, color: "var(--fg)", maxWidth: "50ch" }}>{STRINGS.studioLead[lang]}</p>
       </section>
 
       {/* ---------- FULL-BLEED IMAGE ---------- */}

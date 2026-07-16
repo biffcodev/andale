@@ -94,7 +94,7 @@ export default function WorkPage() {
         <Reveal as="h1" style={{ fontSize: "clamp(48px,10vw,168px)", fontWeight: 800, letterSpacing: "-.05em", lineHeight: 0.9, marginTop: "clamp(18px,2.5vh,30px)", maxWidth: "12ch", textWrap: "balance" }}>
           {t.ui.portfolioTitle}
         </Reveal>
-        <Reveal as="p" style={{ marginTop: "clamp(22px,3vh,34px)", fontSize: "clamp(17px,1.5vw,22px)", lineHeight: 1.55, color: "var(--muted)", maxWidth: "46ch" }}>
+        <Reveal as="p" style={{ marginTop: "clamp(22px,3vh,34px)", fontSize: "clamp(16px,1.25vw,20px)", lineHeight: 1.58, color: "var(--fg)", maxWidth: "50ch" }}>
           {t.ui.worksIntro}
         </Reveal>
         <div style={{ position: "absolute", left: "clamp(20px,6vw,110px)", bottom: "clamp(34px,6vh,60px)", right: "clamp(20px,6vw,110px)", display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 20 }}>

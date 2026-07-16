@@ -31,7 +31,7 @@ export default function ServicesPage() {
       <section className="snap" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "clamp(96px,14vh,150px) clamp(20px,6vw,110px)", maxWidth: 1500 }}>
         <span className="kicker">{t.ui.servicesKicker}</span>
         <h1 style={{ fontSize: "clamp(40px,6vw,100px)", fontWeight: 800, letterSpacing: "-.04em", lineHeight: 0.98, marginTop: "clamp(20px,2.6vh,30px)", maxWidth: "15ch", textWrap: "balance" }}>{t.ui.servicesIntro}</h1>
-        <p style={{ marginTop: "clamp(20px,2.8vh,30px)", fontSize: "clamp(17px,1.4vw,21px)", lineHeight: 1.55, color: "var(--muted)", maxWidth: "46ch" }}>{STRINGS.servicesLead[lang]}</p>
+        <p style={{ marginTop: "clamp(20px,2.8vh,30px)", fontSize: "clamp(16px,1.25vw,20px)", lineHeight: 1.58, color: "var(--fg)", maxWidth: "50ch" }}>{STRINGS.servicesLead[lang]}</p>
       </section>
 
       {/* ---------- ACCORDION + STICKY VISUAL ---------- */}
@@ -97,7 +97,7 @@ export default function ServicesPage() {
                   <div style={{ display: "grid", gridTemplateColumns: "clamp(38px,4vw,64px) 1fr", columnGap: "clamp(14px,2vw,28px)" }}>
                     <span />
                     <div style={{ display: "flex", flexWrap: "wrap", gap: "clamp(20px,3vw,44px)", alignItems: "flex-start" }}>
-                      <p style={{ flex: "1 1 260px", fontSize: "clamp(16px,1.3vw,20px)", lineHeight: 1.55, color: "var(--muted)", margin: 0, maxWidth: "44ch" }}>{sv.desc}</p>
+                      <p style={{ flex: "1 1 260px", fontSize: "clamp(16px,1.25vw,20px)", lineHeight: 1.58, color: "var(--fg)", margin: 0, maxWidth: "44ch" }}>{sv.desc}</p>
                       <div style={{ flex: "0 0 auto", display: "flex", flexDirection: "column", gap: 10 }}>
                         {(deliverables[i] || []).map((d) => (
                           <span key={d} style={{ fontSize: "clamp(15px,1.2vw,18px)", fontWeight: 600, letterSpacing: "-.01em", color: "var(--fg)" }}>{d}</span>

@@ -49,7 +49,7 @@ export function PolicyPage({ policy, primaryCta, extra }: {
               <span className="mono" style={{ fontSize: 13, fontWeight: 600, color: "var(--accent,var(--fg))", lineHeight: 1.7 }}>0{i + 1}</span>
               <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 <h2 style={{ fontSize: "clamp(22px,2.4vw,34px)", fontWeight: 700, letterSpacing: "-.025em", lineHeight: 1.08 }}>{sec.h}</h2>
-                <p style={{ fontSize: "clamp(16px,1.3vw,19px)", lineHeight: 1.65, color: "var(--muted)", maxWidth: "60ch" }}>{sec.p}</p>
+                <p style={{ fontSize: "clamp(16px,1.25vw,20px)", lineHeight: 1.65, color: "var(--fg)", maxWidth: "62ch" }}>{sec.p}</p>
               </div>
             </Reveal>
           ))}

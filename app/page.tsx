@@ -305,7 +305,7 @@ export default function HomePage() {
             <h2 style={{ fontSize: "clamp(38px,6.4vw,96px)", fontWeight: 800, letterSpacing: "-.035em", lineHeight: 1.02, marginTop: 32, maxWidth: "20ch", textWrap: "balance" }}>{t.aboutTitle}</h2>
           </RevealItem>
           <RevealItem>
-            <p style={{ marginTop: 34, fontSize: "clamp(17px,1.5vw,21px)", lineHeight: 1.6, color: "var(--muted)", maxWidth: "60ch" }}>{t.aboutBody}</p>
+            <p style={{ marginTop: 34, fontSize: "clamp(16px,1.25vw,20px)", lineHeight: 1.58, color: "var(--fg)", maxWidth: "62ch" }}>{t.aboutBody}</p>
           </RevealItem>
           <RevealItem>
             <PillButton style={{ marginTop: 38, padding: "16px 30px", fontSize: 16 }} onClick={() => router.push("/studio")}>
