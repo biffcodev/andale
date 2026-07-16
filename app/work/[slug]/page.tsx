@@ -25,28 +25,30 @@ const BODY: CSSProperties = { fontSize: "clamp(16px,1.35vw,19px)", fontWeight: 4
    `pairAr` sizes the pair cells (the real portrait's width/height) so the image
    fills its cell exactly and any placeholder beside it matches. */
 function ImageRow({ imgs, mobile, map, pairAr }: { imgs: string[]; mobile: boolean; map?: Record<string, string>; pairAr?: number }) {
+  /* Images render plainly and always visible — no scroll-reveal opacity/transform
+     wrapper (which could strand an image invisible on iOS Safari) and no CSS
+     `aspect-ratio` dependency (which collapses on older iOS). A real image is a
+     natural `<img>` at full width; an empty slot reserves space with a padding box. */
   if (imgs.length === 1) {
     const src = imgs[0];
-    if (!src) return <div style={{ width: "100%", aspectRatio: "16 / 9", ...coverBase(null) }} />;
+    if (!src) return <div style={{ width: "100%", paddingTop: "56.25%", ...coverBase(null) }} />;
     return (
-      <Reveal style={{ width: "100%" }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={pickSrc(src, mobile, map)} alt="" loading="lazy" style={{ display: "block", width: "100%", height: "auto" }} />
-      </Reveal>
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={pickSrc(src, mobile, map)} alt="" className="gimg" style={{ display: "block", width: "100%", height: "auto" }} />
     );
   }
-  const boxAr = String(pairAr ?? 0.82);
+  const padPct = Math.round((1 / (pairAr ?? 0.82)) * 10000) / 100; // placeholder height as % of its width
   return (
     <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", width: "100%" }}>
       {imgs.map((src, i) => (
-        <Reveal key={`${src}-${i}`} style={{ flex: mobile ? "none" : "1 1 0", minWidth: 0, width: mobile ? "100%" : undefined }}>
-          <div style={{ position: "relative", width: "100%", aspectRatio: boxAr, overflow: "hidden", ...(src ? {} : coverBase(null)) }}>
-            {src && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={pickSrc(src, mobile, map)} alt="" loading="lazy" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain" }} />
-            )}
-          </div>
-        </Reveal>
+        <div key={`${src}-${i}`} style={{ flex: mobile ? "none" : "1 1 0", minWidth: 0, width: mobile ? "100%" : undefined }}>
+          {src ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={pickSrc(src, mobile, map)} alt="" className="gimg" style={{ display: "block", width: "100%", height: "auto" }} />
+          ) : (
+            <div style={{ width: "100%", paddingTop: `${padPct}%`, ...coverBase(null) }} />
+          )}
+        </div>
       ))}
     </div>
   );

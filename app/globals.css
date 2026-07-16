@@ -108,6 +108,26 @@ body {
     transform: none;
   }
 }
+/* Gallery images: a gentle load-in that is SAFE by construction — the base state
+   is fully visible (no animation-fill-mode), so if the animation never runs
+   (reduced motion, older engines) the image still shows. This replaces the JS
+   scroll-reveal on images, which could strand them invisible on iOS Safari. */
+.gimg {
+  animation: gimgin 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes gimgin {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gimg {
+    animation: none;
+  }
+}
 @keyframes cue {
   0%,
   100% {
