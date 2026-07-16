@@ -55,10 +55,13 @@ Orden y uso:
   (cualquier archivo que no sea `cover` ni `hero`), en orden natural. Se
   intercalan con los textos y las frases. Los huecos sin imagen quedan como
   placeholder rayado hasta que subas la foto.
-- **Justo después del overview** la página arma una **fila de dos** (media pantalla
-  cada una): el primer archivo de galería a la izquierda y un placeholder a la
-  derecha, pensado para un asset vertical de ~960×1080 con espacio para una
-  segunda imagen. Nombrá el GIF para que ordene primero (ej. `lomo-loco-1.gif`).
+- **El diseño respeta la orientación de cada archivo** (se detecta sola con
+  `sharp`): las imágenes/GIF **verticales** se muestran de a dos (media pantalla
+  cada una); si una vertical queda sola, se acompaña con un placeholder a la
+  derecha (el hueco para la próxima foto). Las **apaisadas o cuadradas** ocupan la
+  pantalla completa. Así, apenas termina el overview, un GIF vertical de ~960×1080
+  aparece con su placeholder al lado, y una apaisada se ve a pantalla completa.
+  Nombrá los archivos para que ordenen como querés (ej. `lomo-loco-1.gif`).
 - **Portada animada (GIF/imagen) solo para el hero de la página individual:**
   un archivo con `hero` en el nombre. En la home y el archivo la portada sigue
   siendo la imagen/video de portada. Ej.: `casa-capo/casacapo-hero.webp`.

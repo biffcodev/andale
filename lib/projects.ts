@@ -57,6 +57,8 @@ export interface Project {
       The home rail and the archive keep the static `cover` image/video. */
   coverAnimated?: string;
   gallery: string[];
+  /** Aspect ratio (w/h) per gallery URL, for portrait/landscape layout. */
+  ar?: Record<string, number>;
   video?: string;
   /** Desktop URL → mobile (9:16) URL, for any asset with a `-mobile` variant. */
   mobileMap?: Record<string, string>;
@@ -69,7 +71,7 @@ export interface Project {
    files it falls back to the by-convention placeholder paths, which degrade to
    the striped placeholder. `cover` is the first image; `gallery` is the rest
    (the detail page uses the first four and shows any extras in a closing grid). */
-const MANIFEST = imageManifest as Record<string, { images: string[]; cover?: string; hero?: string; coverVideo?: string; video?: string; mobile?: Record<string, string> }>;
+const MANIFEST = imageManifest as Record<string, { images: string[]; ar?: Record<string, number>; cover?: string; hero?: string; coverVideo?: string; video?: string; mobile?: Record<string, string> }>;
 
 const img = (slug: string) => {
   const entry = MANIFEST[slug];
@@ -79,6 +81,8 @@ const img = (slug: string) => {
     cover: entry?.cover ?? `/uploads/projects/${slug}/cover.webp`,
     /* in-page gallery media (images + gifs) */
     gallery: entry?.images ?? [],
+    /* aspect ratio (w/h) per gallery URL, for portrait/landscape layout */
+    ar: entry?.ar,
     coverAnimated: entry?.hero,
     coverVideo: entry?.coverVideo,
     video: entry?.video,
@@ -109,6 +113,8 @@ export interface LocalizedProject extends ProjectContent {
   coverVideo?: string;
   coverAnimated?: string;
   gallery: string[];
+  /** Aspect ratio (w/h) per gallery URL, for portrait/landscape layout. */
+  ar?: Record<string, number>;
   video?: string;
   mobileMap?: Record<string, string>;
   index: number;
@@ -132,6 +138,7 @@ export function getProjects(lang: Lang): LocalizedProject[] {
     coverVideo: p.coverVideo,
     coverAnimated: p.coverAnimated,
     gallery: p.gallery,
+    ar: p.ar,
     video: p.video,
     mobileMap: p.mobileMap,
     index: i,

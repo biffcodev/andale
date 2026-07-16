@@ -17,12 +17,13 @@
        is served on phones (portrait 9:16). Files without a `-mobile` sibling look
        the same on both devices. The `mobile` map pairs desktop URL → mobile URL.
 
-   Output per slug: { images: string[], hero?, coverVideo?, video?, mobile?: { [desktopUrl]: mobileUrl } }.
+   Output per slug: { images: string[], ar?: { [url]: w/h }, cover?, hero?, coverVideo?, video?, mobile?: { [desktopUrl]: mobileUrl } }.
 
    Runs automatically before build/dev via the prebuild/predev npm hooks, and
    can be run on demand: node scripts/build-image-manifest.mjs                   */
 import { readdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import sharp from "sharp";
 
 const ROOT = "public/uploads/projects";
 const OUT = "lib/projects.images.json";
@@ -73,7 +74,22 @@ for (const slug of slugs.sort()) {
     if (m) mobile[url(f)] = url(m);
   }
 
+  /* aspect ratio (w/h) per gallery image, so the page can pair portrait media and
+     run landscape media full-bleed */
+  const ar = {};
+  for (const f of ordered) {
+    try {
+      const m = await sharp(join(ROOT, slug, f), { animated: true }).metadata();
+      const w = m.width || 1;
+      const h = m.pageHeight || m.height || 1;
+      ar[url(f)] = Math.round((w / h) * 100) / 100;
+    } catch {
+      /* ignore unreadable files */
+    }
+  }
+
   const entry = { images: ordered.map(url) };
+  if (Object.keys(ar).length) entry.ar = ar;
   if (coverImgFile) entry.cover = url(coverImgFile);
   if (heroFile) entry.hero = url(heroFile);
   if (coverVideoFile) entry.coverVideo = url(coverVideoFile);

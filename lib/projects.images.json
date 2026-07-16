@@ -3,6 +3,16 @@
     "images": [],
     "coverVideo": "/uploads/projects/casa-capo/casacapo-cover.mp4"
   },
+  "lomo-loco": {
+    "images": [
+      "/uploads/projects/lomo-loco/lomo-loco-1-stickers.webp",
+      "/uploads/projects/lomo-loco/lomo-loco-2-board.webp"
+    ],
+    "ar": {
+      "/uploads/projects/lomo-loco/lomo-loco-1-stickers.webp": 0.89,
+      "/uploads/projects/lomo-loco/lomo-loco-2-board.webp": 1.78
+    }
+  },
   "polylepis": {
     "images": [],
     "coverVideo": "/uploads/projects/polylepis/polylepis-cover.mp4"

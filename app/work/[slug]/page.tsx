@@ -125,17 +125,32 @@ export default function ProjectPage() {
     { k: t.ui.services, v: work.tags },
   ];
 
-  /* Pull the next `n` gallery items into one row; empty slots become striped
-     placeholders (marked with ""), so copy and quotes stay interleaved with media
-     and reserved slots show where a photo will go once uploaded. A single row is
-     full-bleed; a pair splits the viewport (two 50%-wide slots). */
-  const queue = [...g];
+  /* Build the image rows from the gallery, honouring each file's aspect ratio:
+     portrait media pairs into a two-up row (a lone portrait pairs with a reserved
+     placeholder — the half-width slot for a photo to come), while landscape/square
+     media runs full-bleed as a single. Rows are then consumed in order at each
+     media slot between the copy and quotes; once they run out, a slot falls back to
+     a reserved placeholder so more images can be dropped in later. */
+  const isPortrait = (url: string) => (work.ar?.[url] ?? 1.4) < 0.95;
+  const rows: string[][] = [];
+  {
+    const gq = [...g];
+    while (gq.length) {
+      const first = gq.shift() as string;
+      if (isPortrait(first)) {
+        const partner = gq.length && isPortrait(gq[0]) ? (gq.shift() as string) : "";
+        rows.push([first, partner]);
+      } else {
+        rows.push([first]);
+      }
+    }
+  }
+  const rowQueue = [...rows];
   let rowId = 0;
-  const take = (n: number): ReactNode => {
-    const imgs = Array.from({ length: n }, () => queue.shift() ?? "");
+  const slot = (): ReactNode => {
+    const imgs = rowQueue.shift() ?? [""];
     return <ImageRow key={`row-${rowId++}`} imgs={imgs} mobile={isMobile} map={work.mobileMap} />;
   };
-  const mediaSlot = (): ReactNode => take(1);
 
   /* Interleave copy, photos and quotes so nothing stacks up together. */
   const blocks: ReactNode[] = [];
@@ -154,9 +169,10 @@ export default function ProjectPage() {
       </Reveal>
     </TextBlock>,
   );
-  /* Right after the overview: a two-up row (first gallery item + a reserved slot),
-     sized so a half-width 960×1080 asset sits beside a placeholder for a second image. */
-  blocks.push(take(2));
+  /* Right after the overview: the first image row. A portrait asset (e.g. a
+     960×1080 GIF) pairs with a reserved half-width slot; a landscape asset runs
+     full-bleed. */
+  blocks.push(slot());
 
   /* 02 — Challenge and 03 — Approach share one row, two columns. */
   blocks.push(
@@ -175,11 +191,11 @@ export default function ProjectPage() {
       </div>
     </section>,
   );
-  blocks.push(mediaSlot());
+  blocks.push(slot());
 
   if (q[0]) {
     blocks.push(<PullQuote key="q0" text={q[0]} />);
-    blocks.push(mediaSlot());
+    blocks.push(slot());
   }
 
   /* Colour/motion clip — a mid-page moment (not the opening, not the very end). */
@@ -193,23 +209,23 @@ export default function ProjectPage() {
       ))}
     </TextBlock>,
   );
-  blocks.push(mediaSlot());
+  blocks.push(slot());
 
   if (q[1]) {
     blocks.push(<PullQuote key="q1" text={q[1]} />);
-    blocks.push(mediaSlot());
+    blocks.push(slot());
   }
   if (q[2]) {
     blocks.push(<PullQuote key="q2" text={q[2]} />);
-    blocks.push(mediaSlot());
+    blocks.push(slot());
   }
   q.slice(3).forEach((quote, i) => {
     blocks.push(<PullQuote key={`qx-${i}`} text={quote} />);
-    blocks.push(mediaSlot());
+    blocks.push(slot());
   });
 
-  /* Any images left over close out the gallery (pairs, then a final single). */
-  while (queue.length) blocks.push(take(queue.length >= 2 ? 2 : 1));
+  /* Any image rows left over close out the gallery. */
+  while (rowQueue.length) blocks.push(slot());
 
   return (
     <main id="maincontent" role="main">
