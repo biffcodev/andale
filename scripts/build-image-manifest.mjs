@@ -23,7 +23,16 @@
    can be run on demand: node scripts/build-image-manifest.mjs                   */
 import { readdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import sharp from "sharp";
+
+/* sharp powers aspect-ratio detection. It's a real dependency, but load it
+   defensively: if it's ever unavailable in a build environment, we still emit a
+   valid manifest (without the `ar` map) rather than crashing the whole build. */
+let sharp = null;
+try {
+  sharp = (await import("sharp")).default;
+} catch {
+  console.warn("[manifest] sharp unavailable — skipping aspect-ratio detection");
+}
 
 const ROOT = "public/uploads/projects";
 const OUT = "lib/projects.images.json";
@@ -75,16 +84,18 @@ for (const slug of slugs.sort()) {
   }
 
   /* aspect ratio (w/h) per gallery image, so the page can pair portrait media and
-     run landscape media full-bleed */
+     run landscape media full-bleed (skipped if sharp is unavailable) */
   const ar = {};
-  for (const f of ordered) {
-    try {
-      const m = await sharp(join(ROOT, slug, f), { animated: true }).metadata();
-      const w = m.width || 1;
-      const h = m.pageHeight || m.height || 1;
-      ar[url(f)] = Math.round((w / h) * 100) / 100;
-    } catch {
-      /* ignore unreadable files */
+  if (sharp) {
+    for (const f of ordered) {
+      try {
+        const m = await sharp(join(ROOT, slug, f), { animated: true }).metadata();
+        const w = m.width || 1;
+        const h = m.pageHeight || m.height || 1;
+        ar[url(f)] = Math.round((w / h) * 100) / 100;
+      } catch {
+        /* ignore unreadable files */
+      }
     }
   }
 
