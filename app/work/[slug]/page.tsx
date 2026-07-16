@@ -63,12 +63,12 @@ function PullQuote({ text }: { text: string }) {
         as="blockquote"
         style={{
           margin: "0 auto",
-          maxWidth: "26ch",
+          maxWidth: "24ch",
           textAlign: "center",
-          fontSize: "clamp(26px,3.4vw,52px)",
-          fontWeight: 400,
-          letterSpacing: "-.02em",
-          lineHeight: 1.24,
+          fontSize: "clamp(23px,3vw,44px)",
+          fontWeight: 800,
+          letterSpacing: "-.03em",
+          lineHeight: 1.2,
           color: "var(--fg)",
           textWrap: "balance",
         }}
