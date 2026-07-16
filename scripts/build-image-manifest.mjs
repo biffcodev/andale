@@ -26,7 +26,8 @@ import { join } from "node:path";
 
 const ROOT = "public/uploads/projects";
 const OUT = "lib/projects.images.json";
-const IMG = /\.(webp|png|jpe?g)$/i;
+const IMG = /\.(webp|png|jpe?g)$/i; // static image (cover)
+const GALLERY = /\.(webp|png|jpe?g|gif)$/i; // in-page media (gifs allowed)
 const VID = /\.(mp4|webm)$/i;
 const HERO_NAME = /(^|[-_ ])hero([-_. ]|$)/i;
 const HERO_EXT = /\.(gif|webp|png|jpe?g|mp4|webm)$/i;
@@ -53,24 +54,27 @@ for (const slug of slugs.sort()) {
     return mobileFiles.find((m) => m.toLowerCase() === target);
   };
 
-  /* animated hero (desktop): a "hero"-named file, else any .gif */
-  const heroFile = desktop.find((f) => HERO_NAME.test(f) && HERO_EXT.test(f)) || desktop.find((f) => /\.gif$/i.test(f));
+  /* animated hero (desktop): a file whose name contains "hero" (a loose .gif is
+     an in-page gallery image, not the hero) */
+  const heroFile = desktop.find((f) => HERO_NAME.test(f) && HERO_EXT.test(f));
   /* cover video (name contains "cover") vs the mid-page clip (any other video) */
   const coverVideoFile = desktop.find((f) => VID.test(f) && /cover/i.test(f));
   const videoFile = desktop.find((f) => VID.test(f) && f !== coverVideoFile);
+  /* static cover image: a "cover"-named image (else the card falls back to a placeholder) */
+  const coverImgFile = desktop.find((f) => IMG.test(f) && /cover/i.test(f) && f !== heroFile);
 
-  let files = desktop.filter((f) => IMG.test(f) && f !== heroFile);
-  if (files.length === 0 && !heroFile && !coverVideoFile && !videoFile) continue;
-  const coverIdx = files.findIndex((f) => /cover/i.test(f.replace(IMG, "")));
-  const ordered = coverIdx >= 0 ? [files[coverIdx], ...files.filter((_, i) => i !== coverIdx).sort(natural)] : [...files].sort(natural);
+  /* gallery = in-page media (images + gifs), excluding hero and the cover image */
+  const ordered = desktop.filter((f) => GALLERY.test(f) && f !== heroFile && f !== coverImgFile).sort(natural);
+  if (ordered.length === 0 && !heroFile && !coverImgFile && !coverVideoFile && !videoFile) continue;
 
   const mobile = {};
-  for (const f of [...ordered, heroFile, coverVideoFile, videoFile].filter(Boolean)) {
+  for (const f of [...ordered, heroFile, coverImgFile, coverVideoFile, videoFile].filter(Boolean)) {
     const m = mobileOf(f);
     if (m) mobile[url(f)] = url(m);
   }
 
   const entry = { images: ordered.map(url) };
+  if (coverImgFile) entry.cover = url(coverImgFile);
   if (heroFile) entry.hero = url(heroFile);
   if (coverVideoFile) entry.coverVideo = url(coverVideoFile);
   if (videoFile) entry.video = url(videoFile);

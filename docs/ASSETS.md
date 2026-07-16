@@ -48,17 +48,20 @@ que renombrar nada ni tocar código.**
 
 Orden y uso:
 
-- **Portada** = la primera imagen. Para elegir cuál es, nombrá ese archivo
-  `cover.webp` (tiene prioridad); si no, es la primera en orden natural.
-- La página interna del proyecto usa las siguientes cuatro como paneles grandes
-  y galería, **y cualquier imagen extra aparece en una grilla al final** — así
-  no se desperdicia ninguna que subas.
-- Con una sola imagen ya se ve la portada en el listado y la home. Las que
-  falten muestran placeholder rayado.
-- **Portada animada (GIF) solo para la página del proyecto:** subí un `.gif`
-  (o un archivo con `hero` en el nombre) a la carpeta del proyecto y se usa como
-  portada **únicamente en la página individual**. En la home y el archivo la
-  portada sigue siendo la imagen estática. Ej.: `casa-capo/hero.gif`.
+- **Portada (tarjeta home + archivo)** = una imagen con `cover` en el nombre
+  (ej. `cover.webp` o `LOMO-COVER.webp`). Si no hay, la tarjeta muestra
+  placeholder rayado (o el video de portada, si subiste uno — ver abajo).
+- **Galería de la página interna** = el resto de las imágenes **y los GIF**
+  (cualquier archivo que no sea `cover` ni `hero`), en orden natural. Se
+  intercalan con los textos y las frases. Los huecos sin imagen quedan como
+  placeholder rayado hasta que subas la foto.
+- **Justo después del overview** la página arma una **fila de dos** (media pantalla
+  cada una): el primer archivo de galería a la izquierda y un placeholder a la
+  derecha, pensado para un asset vertical de ~960×1080 con espacio para una
+  segunda imagen. Nombrá el GIF para que ordene primero (ej. `lomo-loco-1.gif`).
+- **Portada animada (GIF/imagen) solo para el hero de la página individual:**
+  un archivo con `hero` en el nombre. En la home y el archivo la portada sigue
+  siendo la imagen/video de portada. Ej.: `casa-capo/casacapo-hero.webp`.
 - **Portada en video (home + archivo):** subí un `.mp4`/`.webm` con `cover` en el
   nombre y se usa como portada en la home y el archivo (las tarjetas), en loop y
   sin sonido. **No** afecta el hero de la página individual. Ej.:

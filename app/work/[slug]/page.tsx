@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import { Footer } from "@/components/footer";
 import { Reveal } from "@/components/reveal";
 import { useSite } from "@/components/site-context";
-import { coverBase, mediaAbs, pickSrc } from "@/lib/content";
+import { mediaAbs, pickSrc } from "@/lib/content";
 import { getProject, getProjects } from "@/lib/projects";
 
 const KICKER: CSSProperties = { fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--accent,var(--fg))" };
@@ -39,8 +39,8 @@ function ImageRow({ imgs, mobile, map }: { imgs: string[]; mobile: boolean; map?
   if (imgs.length === 1) return <FeaturePanel img={pickSrc(imgs[0], mobile, map)} />;
   return (
     <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", height: mobile ? "auto" : "100vh", width: "100%" }}>
-      {imgs.map((src) => (
-        <div key={src} className="casepanel" style={{ position: "relative", flex: mobile ? "none" : "1 1 0", minWidth: 0, height: mobile ? "72vh" : "100%", overflow: "hidden" }}>
+      {imgs.map((src, i) => (
+        <div key={`${src}-${i}`} className="casepanel" style={{ position: "relative", flex: mobile ? "none" : "1 1 0", minWidth: 0, height: mobile ? "72vh" : "100%", overflow: "hidden" }}>
           <div className="casemedia" style={mediaAbs(pickSrc(src, mobile, map))} />
         </div>
       ))}
@@ -125,27 +125,17 @@ export default function ProjectPage() {
     { k: t.ui.services, v: work.tags },
   ];
 
-  /* Walk the gallery in a single, consistent rhythm (one image, then a pair …). */
-  let gi = 0;
-  let ip = 0;
-  const pattern = [1, 2];
-  const nextRow = (): ReactNode => {
-    if (gi >= g.length) return null;
-    const n = Math.min(pattern[ip % pattern.length], g.length - gi);
-    const row = g.slice(gi, gi + n);
-    gi += n;
-    ip += 1;
-    return <ImageRow key={`row-${ip}`} imgs={row} mobile={isMobile} map={work.mobileMap} />;
+  /* Pull the next `n` gallery items into one row; empty slots become striped
+     placeholders (marked with ""), so copy and quotes stay interleaved with media
+     and reserved slots show where a photo will go once uploaded. A single row is
+     full-bleed; a pair splits the viewport (two 50%-wide slots). */
+  const queue = [...g];
+  let rowId = 0;
+  const take = (n: number): ReactNode => {
+    const imgs = Array.from({ length: n }, () => queue.shift() ?? "");
+    return <ImageRow key={`row-${rowId++}`} imgs={imgs} mobile={isMobile} map={work.mobileMap} />;
   };
-
-  /* A striped stand-in shown where a real image will go, so copy and quotes stay
-     interleaved with media even before the photos are uploaded. */
-  let phCount = 0;
-  const placeholder = (): ReactNode => (
-    <div key={`ph-${phCount++}`} className="casepanel" style={{ height: isMobile ? "72vh" : "100vh", width: "100%", ...coverBase(null) }} />
-  );
-  /* Every interleave slot yields media: the next real image, or a placeholder. */
-  const mediaSlot = (): ReactNode => nextRow() ?? placeholder();
+  const mediaSlot = (): ReactNode => take(1);
 
   /* Interleave copy, photos and quotes so nothing stacks up together. */
   const blocks: ReactNode[] = [];
@@ -164,7 +154,9 @@ export default function ProjectPage() {
       </Reveal>
     </TextBlock>,
   );
-  blocks.push(mediaSlot());
+  /* Right after the overview: a two-up row (first gallery item + a reserved slot),
+     sized so a half-width 960×1080 asset sits beside a placeholder for a second image. */
+  blocks.push(take(2));
 
   /* 02 — Challenge and 03 — Approach share one row, two columns. */
   blocks.push(
@@ -216,8 +208,8 @@ export default function ProjectPage() {
     blocks.push(mediaSlot());
   });
 
-  /* Any images left over close out the gallery in the same rhythm. */
-  for (let row = nextRow(); row; row = nextRow()) blocks.push(row);
+  /* Any images left over close out the gallery (pairs, then a final single). */
+  while (queue.length) blocks.push(take(queue.length >= 2 ? 2 : 1));
 
   return (
     <main id="maincontent" role="main">
