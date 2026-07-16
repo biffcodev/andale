@@ -6,11 +6,13 @@
   "lomo-loco": {
     "images": [
       "/uploads/projects/lomo-loco/lomo-loco-1-stickers.webp",
-      "/uploads/projects/lomo-loco/lomo-loco-2-board.webp"
+      "/uploads/projects/lomo-loco/lomo-loco-2-logos.webp",
+      "/uploads/projects/lomo-loco/lomo-loco-3-mood.jpg"
     ],
     "ar": {
       "/uploads/projects/lomo-loco/lomo-loco-1-stickers.webp": 0.89,
-      "/uploads/projects/lomo-loco/lomo-loco-2-board.webp": 1.78
+      "/uploads/projects/lomo-loco/lomo-loco-2-logos.webp": 0.89,
+      "/uploads/projects/lomo-loco/lomo-loco-3-mood.jpg": 1.78
     }
   },
   "polylepis": {
