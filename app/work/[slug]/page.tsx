@@ -1,12 +1,11 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { notFound, useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { Reveal } from "@/components/reveal";
 import { useSite } from "@/components/site-context";
-import { mediaAbs, pickSrc } from "@/lib/content";
+import { coverBase, mediaAbs, pickSrc } from "@/lib/content";
 import { getProject, getProjects } from "@/lib/projects";
 
 const KICKER: CSSProperties = { fontSize: 12, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--accent,var(--fg))" };
@@ -17,32 +16,37 @@ const LEAD: CSSProperties = { fontSize: "clamp(18px,1.55vw,24px)", fontWeight: 6
 const PROSE: CSSProperties = { fontSize: "clamp(17px,1.4vw,22px)", fontWeight: 400, letterSpacing: "-.005em", lineHeight: 1.52 };
 const BODY: CSSProperties = { fontSize: "clamp(16px,1.35vw,19px)", fontWeight: 400, lineHeight: 1.62, color: "var(--muted)" };
 
-/* Single full-bleed image, full viewport, that settles from 1.22→1 while scrolled
-   through (the design's panelReveal view-timeline). */
-function FeaturePanel({ img }: { img: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const scale = useTransform(scrollYProgress, [0, 1], [1.22, 1]);
+/* One gallery row, shown COMPLETE (never cropped):
+   - a single (landscape/square) image runs full-bleed width at its natural height,
+     so the whole composition is visible;
+   - a pair (portrait media) sits side by side, each contained in an equal cell so
+     both are fully visible; empty slots ("") become a striped placeholder of the
+     same size. On phones a pair stacks and scrolls normally.
+   `pairAr` sizes the pair cells (the real portrait's width/height) so the image
+   fills its cell exactly and any placeholder beside it matches. */
+function ImageRow({ imgs, mobile, map, pairAr }: { imgs: string[]; mobile: boolean; map?: Record<string, string>; pairAr?: number }) {
+  if (imgs.length === 1) {
+    const src = imgs[0];
+    if (!src) return <div style={{ width: "100%", aspectRatio: "16 / 9", ...coverBase(null) }} />;
+    return (
+      <Reveal style={{ width: "100%" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={pickSrc(src, mobile, map)} alt="" loading="lazy" style={{ display: "block", width: "100%", height: "auto" }} />
+      </Reveal>
+    );
+  }
+  const boxAr = String(pairAr ?? 0.82);
   return (
-    <div ref={ref} style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
-      <motion.div style={{ ...mediaAbs(img), scale: reduce ? 1 : scale }} />
-    </div>
-  );
-}
-
-/* One full-bleed image row — the whole project presents its images this way:
-   a single image, two in a line, or three, edge-to-edge with no rounded corners.
-   A single fills the viewport (FeaturePanel); a pair/trio splits it. On phones a
-   row stacks and scrolls normally instead of squeezing the images into columns. */
-function ImageRow({ imgs, mobile, map }: { imgs: string[]; mobile: boolean; map?: Record<string, string> }) {
-  if (imgs.length === 1) return <FeaturePanel img={pickSrc(imgs[0], mobile, map)} />;
-  return (
-    <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", height: mobile ? "auto" : "100vh", width: "100%" }}>
+    <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", width: "100%" }}>
       {imgs.map((src, i) => (
-        <div key={`${src}-${i}`} className="casepanel" style={{ position: "relative", flex: mobile ? "none" : "1 1 0", minWidth: 0, height: mobile ? "72vh" : "100%", overflow: "hidden" }}>
-          <div className="casemedia" style={mediaAbs(pickSrc(src, mobile, map))} />
-        </div>
+        <Reveal key={`${src}-${i}`} style={{ flex: mobile ? "none" : "1 1 0", minWidth: 0, width: mobile ? "100%" : undefined }}>
+          <div style={{ position: "relative", width: "100%", aspectRatio: boxAr, overflow: "hidden", ...(src ? {} : coverBase(null)) }}>
+            {src && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={pickSrc(src, mobile, map)} alt="" loading="lazy" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain" }} />
+            )}
+          </div>
+        </Reveal>
       ))}
     </div>
   );
@@ -149,7 +153,9 @@ export default function ProjectPage() {
   let rowId = 0;
   const slot = (): ReactNode => {
     const imgs = rowQueue.shift() ?? [""];
-    return <ImageRow key={`row-${rowId++}`} imgs={imgs} mobile={isMobile} map={work.mobileMap} />;
+    /* size a pair's cells from the real portrait in the row (fallback ~4:5) */
+    const pairAr = imgs.map((u) => (u ? work.ar?.[u] : undefined)).find((v): v is number => typeof v === "number");
+    return <ImageRow key={`row-${rowId++}`} imgs={imgs} mobile={isMobile} map={work.mobileMap} pairAr={pairAr} />;
   };
 
   /* Interleave copy, photos and quotes so nothing stacks up together. */
