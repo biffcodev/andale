@@ -67,12 +67,34 @@
   "polylepis": {
     "images": [
       "/uploads/projects/polylepis/polylepis-01-badges.webp",
-      "/uploads/projects/polylepis/polylepis-02-destinations.webp"
+      "/uploads/projects/polylepis/polylepis-02-destinations.webp",
+      "/uploads/projects/polylepis/polylepis-03-mood.webp",
+      "/uploads/projects/polylepis/polylepis-04.webp",
+      "/uploads/projects/polylepis/polylepis-05.webp",
+      "/uploads/projects/polylepis/polylepis-06.webp",
+      "/uploads/projects/polylepis/polylepis-07.webp",
+      "/uploads/projects/polylepis/polylepis-08.webp",
+      "/uploads/projects/polylepis/polylepis-09.webp",
+      "/uploads/projects/polylepis/polylepis-10.webp"
     ],
     "ar": {
       "/uploads/projects/polylepis/polylepis-01-badges.webp": 0.89,
-      "/uploads/projects/polylepis/polylepis-02-destinations.webp": 0.89
+      "/uploads/projects/polylepis/polylepis-02-destinations.webp": 0.89,
+      "/uploads/projects/polylepis/polylepis-03-mood.webp": 1.78,
+      "/uploads/projects/polylepis/polylepis-04.webp": 1.78,
+      "/uploads/projects/polylepis/polylepis-05.webp": 0.89,
+      "/uploads/projects/polylepis/polylepis-06.webp": 0.89,
+      "/uploads/projects/polylepis/polylepis-07.webp": 1.78,
+      "/uploads/projects/polylepis/polylepis-08.webp": 0.89,
+      "/uploads/projects/polylepis/polylepis-09.webp": 0.89,
+      "/uploads/projects/polylepis/polylepis-10.webp": 1.78
     },
-    "coverVideo": "/uploads/projects/polylepis/polylepis-cover.mp4"
+    "coverVideo": "/uploads/projects/polylepis/polylepis-cover.mp4",
+    "mobile": {
+      "/uploads/projects/polylepis/polylepis-03-mood.webp": "/uploads/projects/polylepis/polylepis-03-mood-mobile.webp",
+      "/uploads/projects/polylepis/polylepis-04.webp": "/uploads/projects/polylepis/polylepis-04-mobile.webp",
+      "/uploads/projects/polylepis/polylepis-07.webp": "/uploads/projects/polylepis/polylepis-07-mobile.webp",
+      "/uploads/projects/polylepis/polylepis-10.webp": "/uploads/projects/polylepis/polylepis-10-mobile.webp"
+    }
   }
 }
