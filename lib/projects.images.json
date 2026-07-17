@@ -65,7 +65,14 @@
     }
   },
   "polylepis": {
-    "images": [],
+    "images": [
+      "/uploads/projects/polylepis/polylepis-01-badges.webp",
+      "/uploads/projects/polylepis/polylepis-02-destinations.webp"
+    ],
+    "ar": {
+      "/uploads/projects/polylepis/polylepis-01-badges.webp": 0.89,
+      "/uploads/projects/polylepis/polylepis-02-destinations.webp": 0.89
+    },
     "coverVideo": "/uploads/projects/polylepis/polylepis-cover.mp4"
   }
 }
