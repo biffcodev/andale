@@ -1,31 +1,35 @@
 {
   "casa-capo": {
     "images": [
-      "/uploads/projects/casa-capo/casacapo-01.webp",
-      "/uploads/projects/casa-capo/casacapo-02-mood.webp",
-      "/uploads/projects/casa-capo/casacapo-03.webp",
+      "/uploads/projects/casa-capo/casacapo-01-ilustracion.webp",
+      "/uploads/projects/casa-capo/casacapo-02-frases.webp",
+      "/uploads/projects/casa-capo/casacapo-03-mood.webp",
       "/uploads/projects/casa-capo/casacapo-04.webp",
       "/uploads/projects/casa-capo/casacapo-05.webp",
       "/uploads/projects/casa-capo/casacapo-06.webp",
       "/uploads/projects/casa-capo/casacapo-07.webp",
-      "/uploads/projects/casa-capo/casacapo-08.webp"
+      "/uploads/projects/casa-capo/casacapo-08.webp",
+      "/uploads/projects/casa-capo/casacapo-09.webp",
+      "/uploads/projects/casa-capo/casacapo-10.webp"
     ],
     "ar": {
-      "/uploads/projects/casa-capo/casacapo-01.webp": 1.78,
-      "/uploads/projects/casa-capo/casacapo-02-mood.webp": 1.78,
-      "/uploads/projects/casa-capo/casacapo-03.webp": 0.89,
-      "/uploads/projects/casa-capo/casacapo-04.webp": 0.89,
+      "/uploads/projects/casa-capo/casacapo-01-ilustracion.webp": 0.89,
+      "/uploads/projects/casa-capo/casacapo-02-frases.webp": 0.89,
+      "/uploads/projects/casa-capo/casacapo-03-mood.webp": 1.78,
+      "/uploads/projects/casa-capo/casacapo-04.webp": 1.78,
       "/uploads/projects/casa-capo/casacapo-05.webp": 0.89,
       "/uploads/projects/casa-capo/casacapo-06.webp": 0.89,
-      "/uploads/projects/casa-capo/casacapo-07.webp": 1.78,
-      "/uploads/projects/casa-capo/casacapo-08.webp": 1.78
+      "/uploads/projects/casa-capo/casacapo-07.webp": 0.89,
+      "/uploads/projects/casa-capo/casacapo-08.webp": 0.89,
+      "/uploads/projects/casa-capo/casacapo-09.webp": 1.78,
+      "/uploads/projects/casa-capo/casacapo-10.webp": 1.78
     },
     "coverVideo": "/uploads/projects/casa-capo/casacapo-cover.mp4",
     "mobile": {
-      "/uploads/projects/casa-capo/casacapo-01.webp": "/uploads/projects/casa-capo/casacapo-01-mobile.webp",
-      "/uploads/projects/casa-capo/casacapo-02-mood.webp": "/uploads/projects/casa-capo/casacapo-02-mood-mobile.webp",
-      "/uploads/projects/casa-capo/casacapo-07.webp": "/uploads/projects/casa-capo/casacapo-07-mobile.webp",
-      "/uploads/projects/casa-capo/casacapo-08.webp": "/uploads/projects/casa-capo/casacapo-08-mobile.webp"
+      "/uploads/projects/casa-capo/casacapo-03-mood.webp": "/uploads/projects/casa-capo/casacapo-03-mood-mobile.webp",
+      "/uploads/projects/casa-capo/casacapo-04.webp": "/uploads/projects/casa-capo/casacapo-04-mobile.webp",
+      "/uploads/projects/casa-capo/casacapo-09.webp": "/uploads/projects/casa-capo/casacapo-09-mobile.webp",
+      "/uploads/projects/casa-capo/casacapo-10.webp": "/uploads/projects/casa-capo/casacapo-10-mobile.webp"
     }
   },
   "lomo-loco": {
